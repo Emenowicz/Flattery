@@ -1,4 +1,4 @@
-package zpi.flattery.Models;
+package zpi.flattery.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;

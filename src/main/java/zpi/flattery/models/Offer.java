@@ -1,9 +1,9 @@
-package zpi.flattery.Models;
+package zpi.flattery.models;
 
 
-import zpi.flattery.Models.Enums.BuildingType;
-import zpi.flattery.Models.Enums.OfferType;
-import zpi.flattery.Models.Enums.RoomType;
+import zpi.flattery.models.enums.BuildingType;
+import zpi.flattery.models.enums.OfferType;
+import zpi.flattery.models.enums.RoomType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

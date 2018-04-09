@@ -7,20 +7,27 @@
 
     <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/1.3.0/bootstrap-vue.css"/>
     <link type="text/css" rel="stylesheet" href="/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css"/>
-
+    <title>Flattery</title>
 </head>
 <body>
 <div id="app">
     <div th:insert="fragments/header :: header"></div>
 
-    <b-container>
-        <b-row>
-            <b-col>
-                <h1>{{ message }}</h1>
-            </b-col>
-        </b-row>
-    </b-container>
-
+    <div class="text-center">
+        <b-container>
+            <h1 class="display-2">Znajdź swoje miejsce</h1>
+            <div class="text-left">
+                    <b-form th:method="post" th:action="@{/search}">
+                        <b-form-group id="citySearch" label="Miasto" label-for="cityInput">
+                            <b-form-input id="cityInput" type="text" placeholder="Wpisz miasto" required></b-form-input>
+                        </b-form-group>
+                        <div class="text-right">
+                            <b-button type="submit" size="lg" variant="primary">Szukaj</b-button>
+                        </div>
+                    </b-form>
+            </div>
+        </b-container>
+    </div>
     <div th:insert="fragments/footer :: footer"></div>
 </div>
 

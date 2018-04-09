@@ -33,6 +33,7 @@ public class OfferScrapper {
         private int maxPrice;
         private int minPrice;
         private Integer radius;
+        private Integer daysOld;
 
         private OfferScrapperBuilder(ScrapStrategy scrapStrategy) {
             this.scrapStrategy = scrapStrategy;
@@ -44,7 +45,7 @@ public class OfferScrapper {
             if (offerType != OfferType.Room) {
                 roomType = null;
             }
-            scrapStrategy.setScrapParameters(roomType, offerType, query, minPrice, maxPrice, place, radius);
+            scrapStrategy.setScrapParameters(roomType, offerType, query, minPrice, maxPrice, place, radius, daysOld);
             return new OfferScrapper(scrapStrategy);
         }
 
@@ -85,6 +86,11 @@ public class OfferScrapper {
 
         public OfferScrapperBuilder query(String query) {
             this.query = query;
+            return this;
+        }
+
+        public OfferScrapperBuilder maxDaysOld(int daysOld){
+            this.daysOld = daysOld;
             return this;
         }
     }

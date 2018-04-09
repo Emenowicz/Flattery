@@ -10,7 +10,6 @@ public class OlxUtil {
 
     private static final Logger LOGGER = Logger.getLogger(OlxUtil.class.getName());
 
-
     public static LocalDateTime getDateFromString(String dateString) {
         LocalDate currentDate = LocalDate.now();
 

@@ -105,6 +105,12 @@ public class Offer {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        Offer offerToCheck = (Offer) obj;
+        return offerToCheck.title.equals(title) && offerToCheck.publishedDate.equals(publishedDate);
+    }
+
+    @Override
     public String toString() {
         return "Offer{" +
                 "title='" + title + '\'' +

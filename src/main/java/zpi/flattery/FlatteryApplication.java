@@ -20,15 +20,19 @@ public class FlatteryApplication {
 
 		Observer observer = (o, arg) -> {
 			List<Offer> scrappedOffers = ((ScrapStrategy) o).getScrappedOffers();
-			for (Offer offer : scrappedOffers)
-				System.out.println(offer.toString());
+			if(scrappedOffers.size() == 0){
+				System.out.println("Not even one offer has been scrapped :(");
+			}else{
+				for (Offer offer : scrappedOffers)
+					System.out.println(offer.toString());
+			}
 		};
 
 		OfferScrapper offerScrapper = OfferScrapper.builder(new OlxStrategy())
 				.minPrice(500)
 				.maxPrice(1000)
 				.place("Wrocław")
-				.query("balkon")
+				.query("pokoj")
 				.radius(10)
 				.offerType(OfferType.Room)
 				.roomType(RoomType.Two)
@@ -36,5 +40,4 @@ public class FlatteryApplication {
 				.build();
 		offerScrapper.scrapOffers();
 	}
-	
 }

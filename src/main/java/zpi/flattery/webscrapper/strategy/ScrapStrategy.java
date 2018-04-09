@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface ScrapStrategy {
-    ArrayList<Offer> scrap();
+    void scrap();
 
-    void setScrapParameters(RoomType roomType, OfferType offerType, String query, Integer minPrice, Integer maxPrice, String place, Integer radius);
+    void setScrapParameters(RoomType roomType, OfferType offerType, String query, Integer minPrice, Integer maxPrice, String place, Integer radius, Integer daysOld);
 
     List<Offer> getScrappedOffers();
 }

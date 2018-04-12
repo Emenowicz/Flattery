@@ -22,14 +22,14 @@
             <h1 class="display-3 mt-5">Znajdź swoje miejsce</h1>
             <b-jumbotron bg-variant="transparent" text-variant="dark">
             <div class="text-left">
-                    <b-form th:method="post" th:action="@{/search}">
-                        <b-form-group id="citySearch" label="Miasto" label-for="cityInput">
-                            <b-form-input id="cityInput" type="text" placeholder="Wpisz miasto" required></b-form-input>
-                        </b-form-group>
-                        <div class="text-right">
-                            <b-button type="submit" size="lg" variant="primary">Szukaj</b-button>
-                        </div>
-                    </b-form>
+                <b-form th:method="post" th:action="@{/search}">
+                    <b-form-group id="citySearch" label="Miasto" label-for="cityInput">
+                        <b-form-input id="cityInput" type="text" placeholder="Wpisz miasto" required></b-form-input>
+                    </b-form-group>
+                    <div class="text-right">
+                        <b-button type="submit" size="lg" variant="primary">Szukaj</b-button>
+                    </div>
+                </b-form>
             </div>
             </b-jumbotron>
         </b-container>
@@ -37,14 +37,16 @@
     <div th:insert="fragments/footer :: footer"></div>
 </div>
 
+<div id="nav-modal" class="user-modal-container" @click.prevent="closeNavModal">
+    <div class="user-modal">
+        <ul class="form-switcher">
+            <li @click.prevent="flip('register',$event)"><a href="#" id="register-form">Zarejestruj się</a></li>
+            <li @click.prevent="flip('login',$event)"><a href="#" id="login-form">Login</a></li>
+        </ul>
+    </div>
+</div>
+
+<script th:src="@{js/app.js}"></script>
 </body>
 
-<script>
-    new Vue({
-        el: "#app",
-        data: {
-            message: "Welcome to Flattery"
-        },
-    });
-</script>
 </html>

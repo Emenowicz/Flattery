@@ -4,10 +4,14 @@
     <script src="/webjars/vue/2.5.13/vue.js"></script>
     <script src="/webjars/bootstrap-vue/1.3.0/bootstrap-vue.js"></script>
     <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-
     <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/1.3.0/bootstrap-vue.css"/>
     <link type="text/css" rel="stylesheet" href="/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css"/>
     <title>Flattery</title>
+    <style>
+        h1{
+            font-family: Georgia;
+        }
+    </style>
 </head>
 <body>
 <div id="app">
@@ -15,7 +19,8 @@
 
     <div class="text-center">
         <b-container>
-            <h1 class="display-2">Znajdź swoje miejsce</h1>
+            <h1 class="display-3 mt-5">Znajdź swoje miejsce</h1>
+            <b-jumbotron bg-variant="transparent" text-variant="dark">
             <div class="text-left">
                     <b-form th:method="post" th:action="@{/search}">
                         <b-form-group id="citySearch" label="Miasto" label-for="cityInput">
@@ -26,6 +31,7 @@
                         </div>
                     </b-form>
             </div>
+            </b-jumbotron>
         </b-container>
     </div>
     <div th:insert="fragments/footer :: footer"></div>

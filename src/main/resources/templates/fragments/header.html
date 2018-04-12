@@ -2,25 +2,22 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <style>
-
-    </style>
 </head>
 <body>
 <div th:fragment="header">
     <b-navbar toggleable="md" type="light" variant="light">
         <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
-        <b-navbar-brand href="#" class="ml-3"  style="font-size: 25px;">Flattery</b-navbar-brand>
+        <b-navbar-brand href="#" class="ml-4"><p class="logo nav-font">{{ appName }}</p></b-navbar-brand>
 
         <b-collapse is-nav id="nav_collapse">
             <!-- Right aligned nav items -->
             <b-navbar-nav class="ml-auto">
 
-                <b-nav-form>
-                        <b-link class="mr-5" style="color: black;">Zaloguj się</b-link>
-                        <b-link class="mr-4" style="color: black;">Zarejestruj się</b-link>
-                </b-nav-form>
+                <b-nav-item href="#" class="mr-4"><p class="navbar-link navbar-font">Zaloguj się</p></b-nav-item>
+                <b-nav-item href="#" class="mr-4"><p class="navbar-link navbar-font">Zarejestruj się</p></b-nav-item>
+
+
             </b-navbar-nav>
 
         </b-collapse>

@@ -4,6 +4,8 @@
     <script src="/webjars/vue/2.5.13/vue.js"></script>
     <script src="/webjars/bootstrap-vue/1.3.0/bootstrap-vue.js"></script>
     <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="https://unpkg.com/vue-recyclerview/dist/vue-recyclerview.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/1.3.0/bootstrap-vue.css"/>
     <link type="text/css" rel="stylesheet" href="/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css"/>
@@ -17,28 +19,69 @@
         <b-container>
             <h1 class="display-2">Znajdź swoje miejsce</h1>
             <div class="text-left">
-                    <b-form th:method="post" th:action="@{/search}">
+                    <b-form th:id="searchForm">
                         <b-form-group id="citySearch" label="Miasto" label-for="cityInput">
-                            <b-form-input id="cityInput" type="text" placeholder="Wpisz miasto" required></b-form-input>
+                            <b-form-input v-model="searchInput" id="cityInput" type="text" placeholder="Wpisz miasto" required></b-form-input>
                         </b-form-group>
                         <div class="text-right">
-                            <b-button type="submit" size="lg" variant="primary">Szukaj</b-button>
+                            <b-button type="submit" v-on:click="searchOffers" size="lg" variant="primary">Szukaj</b-button>
                         </div>
                     </b-form>
+                <b-button v-on:click="searchOffers" size="lg" variant="primary">Szukaj2</b-button>
             </div>
         </b-container>
+    </div>
+    <div id="offer-list">
+        <RecyclerView
+                :prerender="10"
+                style="height: calc(100vh - 50px)"
+                :fetch="offerFetch"
+                :item="offerItem"
+                :tombstone="offerTombstone"
+        ></RecyclerView>
     </div>
     <div th:insert="fragments/footer :: footer"></div>
 </div>
 
-</body>
 
-<script>
+</body>
+<script type="module">
+    import offerItem  from "./recyclerview/OfferItem.vue"
+    import offerTombstone from "./recyclerview/OfferTombstone.vue"
+    import offerFetch from "./recyclerview/offer-fetch.js"
+
     new Vue({
-        el: "#app",
+        el: "#App",
+//        render: h => h(App),
         data: {
-            message: "Welcome to Flattery"
+            searchInput: '',
+            offers: [],
+            offersLoaded: false,
+            message: "Welcome to Flattery",
         },
+
+        components: {
+            offerFetch: offerFetch,
+            offerItem: offerItem,
+            offerTombstone: offerTombstone
+        },
+        methods: {
+            searchOffers: async function(){
+                try {
+                    await axios.post(`/searchOffer`, {
+                        body: this.searchInput
+                    }).then(result => { setRecyclerViewWithOffers(result.data)
+
+                    })
+                } catch (e) {
+                    console.log(e.message);
+                }
+            },
+            setRecyclerViewWithOffers: function(data) {
+
+            }
+        }
     });
 </script>
+
 </html>

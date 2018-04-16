@@ -7,6 +7,7 @@ import zpi.flattery.models.enums.RoomType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +20,6 @@ public class Offer {
     private int offerId;
 
     @ManyToOne
-    @NotNull
     @JoinColumn(name = "user_IdU")
     private User user;
 
@@ -49,7 +49,6 @@ public class Offer {
     @ElementCollection
     private List<byte[]> photos;
 
-    @NotNull
     private String description;
 
     private int numberOfRooms;
@@ -74,6 +73,10 @@ public class Offer {
 
     private String phoneNumber;
 
+    private String coordinates;
+
+    private String photoUrl;
+
     @ManyToMany(mappedBy = "favoriteOffers")
     private List<User> favoritedByUsers;
 
@@ -96,7 +99,35 @@ public class Offer {
         this.publishingDate = publishingDate;
     }
 
+    public Offer(@NotNull String title, @NotNull String city, String urlToOffer, OfferType offerType, RoomType roomType, @NotNull double price, @NotNull Date publishingDate, String photoUrl) {
+        this.photoUrl = photoUrl;
+        this.title = title;
+        this.city = city;
+        this.urlToOffer = urlToOffer;
+        this.offerType = offerType;
+        this.roomType = roomType;
+        this.price = price;
+        this.publishingDate = publishingDate;
+    }
+
     public Offer() {
+    }
+
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
     }
 
     public int getOfferId() {
@@ -305,5 +336,26 @@ public class Offer {
 
     public void setReports(List<ReportedOffer> reports) {
         this.reports = reports;
+    }
+
+    @Override
+    public String toString() {
+        return "Offer{" +
+                "offerId=" + offerId +
+                ", user=" + user +
+                ", title='" + title + '\'' +
+                ", region='" + region + '\'' +
+                ", city='" + city + '\'' +
+                ", urlToOffer='" + urlToOffer + '\'' +
+                ", offerType=" + offerType +
+                ", roomType=" + roomType +
+                ", price=" + price +
+                ", publishingDate=" + publishingDate +
+                ", numberOfRooms=" + numberOfRooms +
+                ", floor=" + floor +
+                ", buildingType=" + buildingType +
+                ", coordinates='" + coordinates + '\'' +
+                ", photoUrl='" + photoUrl + '\'' +
+                '}';
     }
 }

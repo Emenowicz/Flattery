@@ -1,11 +1,33 @@
 package zpi.flattery.controllers.model;
 
 
+import zpi.flattery.models.enums.OfferType;
+import zpi.flattery.models.enums.RoomType;
+
 public class SearchRequest {
     private String query;
     private String city;
     private double minPrice;
     private double maxPrice;
+    private RoomType roomType;
+    private OfferType offerType;
+
+
+    public RoomType getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(RoomType roomType) {
+        this.roomType = roomType;
+    }
+
+    public OfferType getOfferType() {
+        return offerType;
+    }
+
+    public void setOfferType(OfferType offerType) {
+        this.offerType = offerType;
+    }
 
     public String getQuery() {
         return query;

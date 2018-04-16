@@ -10,9 +10,10 @@ import org.jsoup.select.Elements;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import zpi.flattery.model.Offer;
-import zpi.flattery.model.OfferType;
-import zpi.flattery.model.RoomType;
+
+import zpi.flattery.models.Offer;
+import zpi.flattery.models.enums.OfferType;
+import zpi.flattery.models.enums.RoomType;
 import zpi.flattery.webscrapper.googleapi.GeocodeResponse;
 import zpi.flattery.webscrapper.googleapi.GoogleGeocodeApi;
 import zpi.flattery.webscrapper.util.OlxConstants;
@@ -21,6 +22,7 @@ import zpi.flattery.webscrapper.util.OlxUtil;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,7 +50,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
     }
 
     @Override
-    public void setScrapParameters(RoomType roomType, OfferType offerType, String query, Integer minPrice, Integer maxPrice, String place, Integer radius, Integer daysOld) {
+    public void setScrapParameters(RoomType roomType, OfferType offerType, String query, double minPrice, double maxPrice, String place, Integer radius, Integer daysOld) {
 //      https://www.olx.pl/nieruchomosci/stancje-pokoje/wroclaw/q-balkon/?search%5Bfilter_float_price%3Afrom%5D=500&search%5Bfilter_float_price%3Ato%5D=700&search%5Bfilter_enum_roomsize%5D%5B0%5D=two&search%5Bdist%5D=75
         this.offerType = offerType;
         this.roomType = roomType;
@@ -79,19 +81,19 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
             }
             urlToScrap += "/";
         }
-        if (minPrice != null || maxPrice != null || radius != null) {
+        if (minPrice != 0 || maxPrice != 0 || radius != null) {
             boolean isAnyParamAdded = false;
             urlToScrap += "?";
-            if (minPrice != null) {
+            if (minPrice != 0) {
                 isAnyParamAdded = true;
-                urlToScrap += "search%5Bfilter_float_price%3Afrom%5D=" + minPrice;
+                urlToScrap += "search%5Bfilter_float_price%3Afrom%5D=" + (int) minPrice;
             }
-            if (maxPrice != null) {
+            if (maxPrice != 0) {
                 if (isAnyParamAdded)
                     urlToScrap += "&";
                 else
                     isAnyParamAdded = true;
-                urlToScrap += "search%5Bfilter_float_price%3Ato%5D=" + maxPrice;
+                urlToScrap += "search%5Bfilter_float_price%3Ato%5D=" + (int) maxPrice;
             }
             if (radius != null) {
                 if (isAnyParamAdded)
@@ -107,13 +109,13 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
                     isAnyParamAdded = true;
                 urlToScrap += "search%5Bfilter_enum_roomsize%5D%5B0%5D=";
                 switch (roomType) {
-                    case One:
+                    case SinglePerson:
                         urlToScrap += "one";
                         break;
-                    case Two:
+                    case TwoPeople:
                         urlToScrap += "two";
                         break;
-                    case ThreeOrMore:
+                    case ThreeOrMorePeople:
                         urlToScrap += "three";
                         break;
                 }
@@ -157,11 +159,11 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
     }
 
     private boolean isOfferBeforeSearchingDate(Offer offer) {
-        if (daysOld == 0) {
+        if (daysOld == 0)
             return true;
-        }
+
         LocalDateTime currentDate = LocalDateTime.now();
-        long daysBetween = Duration.between(offer.getPublishedDate(), currentDate).toDays();
+        long daysBetween = Duration.between(offer.getPublishingDate().toInstant(), currentDate).toDays();
         return daysBetween <= daysOld;
     }
 
@@ -169,7 +171,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
         String title;
         String link;
         double price;
-        LocalDateTime publishedDate;
+        Date publishingDate;
         String photoUrl;
         String place;
 
@@ -203,13 +205,14 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
 
             //Extracting date
             Element dateElement = offerElement.select("p[class=color-9 lheight16 marginbott5 x-normal]").first();
-            publishedDate = OlxUtil.getDateFromString(dateElement.text());
+            LocalDateTime localDateTime = OlxUtil.getDateFromString(dateElement.text());
+            publishingDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
             //Extracting city
             Elements cityElement = offerElement.select("small[class=breadcrumb x-normal]").select("span");
             place = cityElement.first().text();
 
-            return new Offer(title, link, place, offerType, roomType, price, publishedDate, photoUrl);
+            return new Offer(title, place, link, offerType, roomType, price, publishingDate, photoUrl);
         } else {
             LOGGER.log(Level.FINER, "Error: Offer is from diffrent category than one in applied filter. Filter= " + offerType);
             return null;
@@ -242,7 +245,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
         //Creating Observable objects from offers and addidng them to list
         List<Observable<Offer>> observableList = new LinkedList<>();
         for (Offer offer : scrappedOffers) {
-            observableList.add(service.getGeocode(offer.getPlace(), GoogleGeocodeApi.API_KEY)
+            observableList.add(service.getGeocode(offer.getCity(), GoogleGeocodeApi.API_KEY)
                     .map(response -> combineResponseWithOffer(offer, response)));
         }
         //Observables from list are observed on the same thread so the whole process will wait for all of them to being processed, before completion

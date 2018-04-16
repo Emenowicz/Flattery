@@ -1,8 +1,8 @@
 package zpi.flattery.webscrapper;
 
 
-import zpi.flattery.model.OfferType;
-import zpi.flattery.model.RoomType;
+import zpi.flattery.models.enums.OfferType;
+import zpi.flattery.models.enums.RoomType;
 import zpi.flattery.webscrapper.strategy.ScrapStrategy;
 
 import java.util.Observable;
@@ -30,8 +30,8 @@ public class OfferScrapper {
         private OfferType offerType;
         private String query;
         private String place;
-        private int maxPrice;
-        private int minPrice;
+        private double maxPrice = 0;
+        private double minPrice = 0;
         private Integer radius;
         private Integer daysOld;
 
@@ -69,12 +69,12 @@ public class OfferScrapper {
             return this;
         }
 
-        public OfferScrapperBuilder maxPrice(int maxPrice) {
+        public OfferScrapperBuilder maxPrice(double maxPrice) {
             this.maxPrice = maxPrice;
             return this;
         }
 
-        public OfferScrapperBuilder minPrice(int minPrice) {
+        public OfferScrapperBuilder minPrice(double minPrice) {
             this.minPrice = minPrice;
             return this;
         }
@@ -89,7 +89,7 @@ public class OfferScrapper {
             return this;
         }
 
-        public OfferScrapperBuilder maxDaysOld(int daysOld){
+        public OfferScrapperBuilder maxDaysOld(int daysOld) {
             this.daysOld = daysOld;
             return this;
         }

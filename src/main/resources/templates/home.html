@@ -31,39 +31,26 @@
             </div>
         </b-container>
     </div>
-    <div id="offer-list">
-        <RecyclerView
-                :prerender="10"
-                style="height: calc(100vh - 50px)"
-                :fetch="offerFetch"
-                :item="offerItem"
-                :tombstone="offerTombstone"
-        ></RecyclerView>
-    </div>
+    <b-container v-show="offersLoaded">
+        <div th:insert="fragments/recyclerview :: recyclerview"></div>
+    </b-container>
+
+
     <div th:insert="fragments/footer :: footer"></div>
 </div>
 
 
 </body>
-<script type="module">
-    import offerItem  from "./recyclerview/OfferItem.vue"
-    import offerTombstone from "./recyclerview/OfferTombstone.vue"
-    import offerFetch from "./recyclerview/offer-fetch.js"
+<script>
 
     new Vue({
-        el: "#App",
+        el: "#app",
 //        render: h => h(App),
         data: {
             searchInput: '',
             offers: [],
             offersLoaded: false,
             message: "Welcome to Flattery",
-        },
-
-        components: {
-            offerFetch: offerFetch,
-            offerItem: offerItem,
-            offerTombstone: offerTombstone
         },
         methods: {
             searchOffers: async function(){
@@ -82,6 +69,7 @@
             }
         }
     });
+
 </script>
 
 </html>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_flattery" default="compile.module.flattery">
+  <dirname property="module.flattery.basedir" file="${ant.file.module_flattery}"/>
+  
+  <property name="module.jdk.home.flattery" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.flattery" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.flattery" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.flattery" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="flattery.output.dir" value="${module.flattery.basedir}/target/classes"/>
+  <property name="flattery.testoutput.dir" value="${module.flattery.basedir}/target/test-classes"/>
+  
+  <path id="flattery.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="flattery.module.production.classpath">
+    <path refid="${module.jdk.classpath.flattery}"/>
+  </path>
+  
+  <path id="flattery.runtime.production.module.classpath">
+    <pathelement location="${flattery.output.dir}"/>
+  </path>
+  
+  <path id="flattery.module.classpath">
+    <path refid="${module.jdk.classpath.flattery}"/>
+    <pathelement location="${flattery.output.dir}"/>
+  </path>
+  
+  <path id="flattery.runtime.module.classpath">
+    <pathelement location="${flattery.testoutput.dir}"/>
+    <pathelement location="${flattery.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.flattery">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.flattery">
+    <patternset refid="excluded.from.module.flattery"/>
+  </patternset>
+  
+  
+  <target name="compile.module.flattery" depends="compile.module.flattery.production,compile.module.flattery.tests" description="Compile module flattery"/>
+  
+  <target name="compile.module.flattery.production" depends="register.custom.compilers" description="Compile module flattery; production classes"/>
+  
+  <target name="compile.module.flattery.tests" depends="register.custom.compilers,compile.module.flattery.production" description="compile module flattery; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.flattery" description="cleanup module">
+    <delete dir="${flattery.output.dir}"/>
+    <delete dir="${flattery.testoutput.dir}"/>
+  </target>
+</project>

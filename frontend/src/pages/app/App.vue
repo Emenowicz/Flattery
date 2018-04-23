@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div>
+    <div class="header fixed-top">
       <b-navbar toggleable="md" type="light" variant="light">
         <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
         <b-navbar-brand href="#" class="ml-4"><p class="logo nav-font">{{ appName }}</p></b-navbar-brand>
@@ -14,39 +14,44 @@
       </b-navbar>
     </div>
 
-    <h2>{{msg}}</h2>
-    <router-view></router-view>
-    <h2>Powyzej routerview</h2>
-    <div>
-      <div>
-        <b-navbar variant="light" type="light" class="page-footer m-0 p-0">
-          <b-navbar-brand class="ml-2"><small>Flattery web app-brand &copy;</small></b-navbar-brand>
-        </b-navbar>
-      </div>
+    <div class="text-center all main-section">
+      <router-view></router-view>
+    </div>
+
+    <div class="footer fixed-bottom">
+      <!-- As a heading -->
+      <b-navbar variant="light" type="light" class="page-footer m-0 p-0">
+        <b-navbar-brand class="ml-2">
+          <small>Flattery web app-brand &copy;</small>
+        </b-navbar-brand>
+      </b-navbar>
     </div>
   </div>
+
+
 </template>
 
 <script>
-export default {
-  name: 'App',
-  data () {
-    return {
-      msg: 'Poniżej router-view',
-      appName: 'Flattery'
+  export default {
+    name: 'App',
+    data() {
+      return {
+        msg: 'Poniżej router-view',
+        appName: 'Flattery'
+      }
     }
   }
-}
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
+  @import '../../../static/css/home.css';
+  @import '../../../static/css/website.css';
+  @import '../../../static/css/header.css';
+
+  .search-boxing {
+
+  }
+
 
 </style>

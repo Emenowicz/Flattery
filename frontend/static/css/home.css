@@ -1,29 +1,30 @@
-.all {
-    min-height: 100%;
-    /*width: 100%;*/
-    background: url('apartment.jpg') no-repeat;
-    background-size: cover;
-
-    display: flex;
-    align-items: center;
-
+.all{
+  min-height: 100%;
+  background-image: url('../../static/images/apartment-architecture-carpet-584399.jpg');
+  background-size: cover;
+  display: flex;
+  align-items: center;
 }
 
-.search-box {
-    margin-top: 40px;
-    padding: 50px 80px 30px 30px;
-    margin-bottom: 100px;
-    border-radius: 5px;
-    background-color: rgba(230, 247, 255, .7);
+.search-box{
+  margin-top: 40px;
+  padding: 50px 80px 30px 30px;
+  margin-bottom: 100px;
+  border-radius: 5px;
+  background-color: rgba(230, 247, 255, .7);
 }
 
-.main-section {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    z-index: 1;
+.main-section{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+}
+
+#citySearch{
+  font-size: 25px;
 }
 
 .header {

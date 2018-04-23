@@ -1,23 +1,24 @@
 .navbar-font {
-    font-family: sans-serif;
+  font-family: sans-serif;
 }
 
 .logo {
-    font-size: 30px;
-    font-family: "Century Gothic", serif;
-    margin: 0;
-    padding: 0;
+  font-size: 40px;
+  font-family: "Century Gothic", serif;
+  margin: 0;
+  padding: 0;
 }
 
 .navbar-link {
-    margin: 0;
-    padding: 0;
-    color: dimgrey;
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  color: dimgrey;
 }
 
 .navbar-link:hover {
-    transition: color 0.2s linear;
-    color: black;
+  transition: color 0.2s linear;
+  color: black;
 }
 
 

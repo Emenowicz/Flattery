@@ -106,6 +106,18 @@
               <arguments>install axios --save</arguments>
             </configuration>
           </execution>
+          <execution>
+            <id>npm install Thymeleaf Inject Webpack</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <!-- optional: default phase is "generate-resources" -->
+            <phase>generate-resources</phase>
+            <!-- Optional configuration which provides for running any npm command -->
+            <configuration>
+              <arguments>install --save-dev nkb84/thymeleaf-inject-webpack-plugin</arguments>
+            </configuration>
+          </execution>
           <!-- Build and minify static files -->
           <execution>
             <id>npm run build</id>

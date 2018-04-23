@@ -127,7 +127,7 @@
                                 <resource>
                                     <directory>${project.parent.basedir}/frontend/target/dist</directory>
                                     <excludes>
-                                        <exclude>static/</exclude>
+                                        <exclude>static/**</exclude>
                                     </excludes>
                                 </resource>
                             </resources>
@@ -146,10 +146,6 @@
                             <resources>
                                 <resource>
                                     <directory>${project.parent.basedir}/frontend/target/dist/static</directory>
-                                    <!--<includes>-->
-                                        <!--<include>static/</include>-->
-                                        <!--<include>index.html</include>-->
-                                    <!--</includes>-->
                                 </resource>
                             </resources>
                         </configuration>
@@ -158,23 +154,24 @@
             </plugin>
 
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
-
-                <configuration>
-                    <executable>java</executable>
-
-                    <!--Mozliwe ze to zla faza :/-->
-                    <arguments>
-                        <phase>generate-resources</phase>
-                        <argument>-classpath</argument>
-                        <classpath/>
-                        <argument>
-                            zpi.flattery.Thymeleafier
-                        </argument>
-                    </arguments>
-                </configuration>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>2.5</version>
+                <executions>
+                    <execution>
+                        <id>auto-clean</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <directory>src/main/resources/static</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

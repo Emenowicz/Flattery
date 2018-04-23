@@ -81,6 +81,7 @@
     "sinon": "^4.0.0",
     "sinon-chai": "^2.8.0",
     "style-loader": "^0.21.0",
+    "thymeleaf-inject-webpack-plugin": "github:nkb84/thymeleaf-inject-webpack-plugin",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
     "vue-loader": "^13.3.0",

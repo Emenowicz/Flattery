@@ -13,12 +13,10 @@
             <div class="h-40 d-inline-block"></div>
             <div class="text-right">
               <b-button th:type="submit" v-on:click="routeToList" size="lg" variant="primary">Szukaj</b-button>
-
             </div>
           </b-form>
         </div>
       </b-container>
-
     </div>
   </div>
 </template>

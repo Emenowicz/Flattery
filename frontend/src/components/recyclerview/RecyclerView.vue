@@ -124,7 +124,7 @@ export default ({
           this.loading = false
           this.post = true
           this.offerItems = result.data
-          baseData = result.data
+//          baseData = result.data
         })
       } catch (e) {
         console.log(e.message)
@@ -149,7 +149,7 @@ let baseData = [
     'title': 'Spoko pokoj w spoko mieszkaniu. Ogolnie fajno!',
     'city': 'Wroclaw',
     'price': '1000.00',
-    'photoUrl': 'https://www.rmf.fm/_files/Short_foto/625/bd2107dd15db877c81d5aa527b6c0cbc.jpga'
+    'photoUrl': 'http://kebabharika.pl/wp-content/uploads/2017/10/kebab-rolo-300x300.png'
   },
   {
     'id': '1',
@@ -162,14 +162,14 @@ let baseData = [
 
 let id = 0
 
-function pickOne () {
-  baseData = this.offerItems
-  return baseData[Math.floor(Math.random() * baseData.length)]
+function pickOne (index) {
+//  baseData = this.offerItems
+  return baseData[index]
 }
 
-function getItem () {
+function getItem (index) {
   return new Promise(resolve => {
-    var item = pickOne()
+    var item = pickOne(index)
     item.id = ++id
     var image = new Image()
     image.src = item.photoUrl
@@ -188,7 +188,7 @@ function query (limit, skip) {
     setTimeout(() => {
       var items = []
       for (var i = 0; i < baseData.length; i++) {
-        items[i] = getItem()
+        items[i] = getItem(i)
       }
       resolve(Promise.all(items))
     }, 200)

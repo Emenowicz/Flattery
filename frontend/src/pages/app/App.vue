@@ -16,6 +16,7 @@
 
     <h2>{{msg}}</h2>
     <router-view></router-view>
+    <h2>Powyzej routerview</h2>
     <div>
       <div>
         <b-navbar variant="light" type="light" class="page-footer m-0 p-0">

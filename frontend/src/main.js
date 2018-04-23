@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import App from './pages/greeting/App.vue'
+import App from './pages/app/App.vue'
 import BootstrapVue from 'bootstrap-vue'
 import RecyclerView from 'vue-recyclerview'
 import axios from 'axios'

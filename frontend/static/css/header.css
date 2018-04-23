@@ -21,4 +21,81 @@
   color: black;
 }
 
+.login-register-container * {
+  box-sizing: border-box;
+}
+
+.login-register-container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+  overflow-y: auto;
+  z-index: 3;
+  font-size: 14px;
+  background-color: rgba(17, 17, 17, .9);
+  transition: all 0.25s linear;
+}
+
+.login-register-container.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 4;
+}
+
+.login-register-container .login-register-modal{
+  position: relative;
+  margin: 50px auto;
+  width: 90%;
+  max-width: 500px;
+  background-color: #f6f6f6;
+  cursor: initial;
+}
+
+.login-register-container ul.form-switcher{
+  margin: 0;
+  padding: 0;
+}
+
+.login-register-container ul.form-switcher li{
+  list-style: none;
+  display: inline-block;
+  width: 50%;
+  float: left;
+  margin: 0;
+}
+
+.login-register-container ul.form-switcher li a{
+  width: 100%;
+  display: block;
+  height: 50px;
+  line-height: 50px;
+  color: #666666;
+  background-color: #dddddd;
+  text-align: center;
+}
+
+.login-register-container ul.form-switcher li a.active{
+  color: #000000;
+  background-color: #f6f6f6;
+}
+
+.login-register-container .form-login,
+.login-register-container .form-register,
+.login-register-container .form-password{
+  padding: 75px 25px 25px;
+  display: none;
+}
+
+.login-register-container .form-login.active,
+.login-register-container .form-password.active,
+.login-register-container .form-register.active{
+  display: block;
+}
+
+
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+  <head>
+    <link type="text/css" rel="stylesheet" th:href="@{static/css/website.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{static/css/header.css}"/>
+    <link type="text/css" rel="stylesheet" th:href="@{static/css/home.css}"/>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title th:text="${pageTitle}">Flattery</title>
+  </head>
+  <body>
+  <div class="header fixed-top" th:insert="src/fragments/header :: header"></div>
+  <div class="text-center all main-section">
+    <b-container>
+      <h1 class="display-4">Znajdź swoje miejsce</h1>
+      <div class="search-box mx-auto text-center w-75">
+        <b-form v-on:submit="searchOffers" action="javascript:void(0);e">
+          <b-form-group id="citySearch" horizontal label="Miasto" label-for="cityInput">
+            <b-form-input id="cityInput" class="col-xs-2" v-model="searchQuery" type="text" size="lg"
+                          placeholder="Wpisz miasto"
+                          required></b-form-input>
+          </b-form-group>
+          <div class="h-40 d-inline-block"></div>
+          <div class="text-right">
+            <b-button type="submit" size="lg" class="btn-outline-dark button">Szukaj</b-button>
+          </div>
+        </b-form>
+      </div>
+    </b-container>
+  </div>
+  <div th:insert="src/fragments/footer :: footer"></div>
+
+  <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
+</html>

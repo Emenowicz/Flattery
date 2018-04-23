@@ -10,4 +10,5 @@ public class FlatteryApplication {
 		SpringApplication.run(FlatteryApplication.class, args);
 	}
 
+
 }

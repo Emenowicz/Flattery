@@ -4,39 +4,72 @@
     <script src="/webjars/vue/2.5.13/vue.js"></script>
     <script src="/webjars/bootstrap-vue/1.3.0/bootstrap-vue.js"></script>
     <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
-    <link type="text/css" rel="stylesheet" th:href="@{/css/website.css}"/>
-    <link type="text/css" rel="stylesheet" th:href="@{/css/header.css}"/>
-    <link type="text/css" rel="stylesheet" th:href="@{/css/home.css}"/>
+    <script src="https://unpkg.com/vue-recyclerview/dist/vue-recyclerview.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
     <link type="text/css" rel="stylesheet" href="/webjars/bootstrap-vue/1.3.0/bootstrap-vue.css"/>
     <link type="text/css" rel="stylesheet" href="/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css"/>
     <title>Flattery</title>
 </head>
 <body>
 <div id="app">
-    <div class="header fixed-top" th:insert="fragments/header :: header"></div>
-        <div class="text-center all main-section">
-            <b-container>
-                <h1 class="display-4">Znajdź swoje miejsce</h1>
-                <div class="search-box mx-auto text-center w-75">
-                    <b-form th:method="post" th:action="@{/search}">
-                        <b-form-group id="citySearch" horizontal label="Miasto" label-for="cityInput">
-                            <b-form-input id="cityInput" class="col-xs-2" type="text" size="lg"
-                                          placeholder="Wpisz miasto"
-                                          required></b-form-input>
+    <div th:insert="fragments/header :: header"></div>
+
+    <div class="text-center">
+        <b-container>
+            <h1 class="display-2">Znajdź swoje miejsce</h1>
+            <div class="text-left">
+                    <b-form th:id="searchForm">
+                        <b-form-group id="citySearch" label="Miasto" label-for="cityInput">
+                            <b-form-input v-model="searchInput" id="cityInput" type="text" placeholder="Wpisz miasto" required></b-form-input>
                         </b-form-group>
-                        <div class="h-40 d-inline-block"></div>
                         <div class="text-right">
-                            <b-button type="submit" size="lg" class="btn-outline-dark button">Szukaj</b-button>
+                            <b-button type="submit" v-on:click="searchOffers" size="lg" variant="primary">Szukaj</b-button>
                         </div>
                     </b-form>
-                </div>
-            </b-container>
-
+                <b-button v-on:click="searchOffers" size="lg" variant="primary">Szukaj2</b-button>
+            </div>
+        </b-container>
     </div>
-    <div class="footer fixed-bottom" th:insert="fragments/footer :: footer"></div>
+    <b-container v-show="offersLoaded">
+        <div th:insert="fragments/recyclerview :: recyclerview"></div>
+    </b-container>
+
+
+    <div th:insert="fragments/footer :: footer"></div>
 </div>
 
-<script th:src="@{js/app.js}"></script>
+
 </body>
+<script>
+
+    new Vue({
+        el: "#app",
+//        render: h => h(App),
+        data: {
+            searchInput: '',
+            offers: [],
+            offersLoaded: false,
+            message: "Welcome to Flattery",
+        },
+        methods: {
+            searchOffers: async function(){
+                try {
+                    await axios.post(`/searchOffer`, {
+                        body: this.searchInput
+                    }).then(result => { setRecyclerViewWithOffers(result.data)
+
+                    })
+                } catch (e) {
+                    console.log(e.message);
+                }
+            },
+            setRecyclerViewWithOffers: function(data) {
+
+            }
+        }
+    });
+
+</script>
 
 </html>

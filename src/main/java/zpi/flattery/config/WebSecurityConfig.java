@@ -12,9 +12,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/webjars/**","/css/**","/js/**").permitAll();
-        http.authorizeRequests().antMatchers("/","/search").permitAll();
-        http.authorizeRequests().anyRequest().authenticated();
+
+        http.authorizeRequests().antMatchers("/","/search", "/webjars/**", "/offers").permitAll()
+                .antMatchers("/public/**", "/resources/**","/resources/public/**").permitAll()
+                .antMatchers("/**").anonymous()
+                .anyRequest().authenticated()
+                .and()
+                .csrf().disable()
+        ;
     }
 
 

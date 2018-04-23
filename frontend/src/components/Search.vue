@@ -5,7 +5,7 @@
         <h1 class="display-4">Znajdź swoje miejsce</h1>
         <div class="search-box mx-auto text-center w-75">
           <b-form>
-            <b-form-group id="citySearch" horizontal label="Miasto" label-for="cityInput">
+            <b-form-group id="citySearch" label-size="lg" horizontal label="Miasto" label-for="cityInput">
               <b-form-input v-model="searchInput" id="cityInput" class="col-xs-2" type="text" size="lg"
                             placeholder="Wpisz miasto"
                             required></b-form-input>

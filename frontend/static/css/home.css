@@ -23,14 +23,10 @@
   z-index: 1;
 }
 
-#citySearch{
-  font-size: 25px;
-}
-
 .header {
-    z-index: 999;
+    z-index: 3;
 }
 
 .footer {
-    z-index: 999;
+    z-index: 3;
 }

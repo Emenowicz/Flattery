@@ -141,7 +141,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>src/main/resources/static</outputDirectory>
+                            <outputDirectory>src/main/resources/static/static</outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>

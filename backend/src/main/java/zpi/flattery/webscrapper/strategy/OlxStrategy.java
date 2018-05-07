@@ -262,7 +262,9 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
     }
 
     private Offer combineResponseWithOffer(Offer offer, GeocodeResponse geocodeResponse) {
-        offer.setCoordinates("lat=" + geocodeResponse.results[0].geometry.location.lat + ", lng=" + geocodeResponse.results[0].geometry.location.lng);
+        if(!geocodeResponse.status.equals("OVER_QUERY_LIMIT")){
+            offer.setCoordinates("lat=" + geocodeResponse.results[0].geometry.location.lat + ", lng=" + geocodeResponse.results[0].geometry.location.lng);
+        }
         return offer;
     }
 

@@ -9,7 +9,7 @@
 	<packaging>pom</packaging>
 
 	<name>Flattery</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Flattery App</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

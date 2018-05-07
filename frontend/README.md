@@ -1,6 +1,6 @@
 # frontend
 
-> Flatter App
+> Flattery Frontend
 
 ## Build Setup
 

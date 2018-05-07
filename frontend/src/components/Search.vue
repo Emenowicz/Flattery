@@ -1,4 +1,4 @@
-<template xmlns:th="http://www.w3.org/1999/xhtml">
+<template>
   <div>
     <div class="text-center all main-section">
       <b-container>
@@ -12,7 +12,7 @@
             </b-form-group>
             <div class="h-40 d-inline-block"></div>
             <div class="text-right">
-              <b-button th:type="submit" v-on:click="routeToList" size="lg" variant="primary">Szukaj</b-button>
+              <b-button type="submit" v-on:click="routeToList" size="lg" variant="primary">Szukaj</b-button>
             </div>
           </b-form>
         </div>

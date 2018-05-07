@@ -1,8 +1,8 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "description": "Flatter App",
-  "author": "DM, KK, KW, MK",
+  "description": "Flattery Frontend",
+  "author": "Michal Kalisz <kfeedu@gmail.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -15,10 +15,8 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "bootstrap": "^4.1.0",
-    "bootstrap-vue": "^2.0.0-rc.8",
+    "bootstrap-vue": "^2.0.0-rc.9",
     "vue": "^2.5.2",
-    "vue-recyclerview": "^0.4.0",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
@@ -81,7 +79,6 @@
     "sinon": "^4.0.0",
     "sinon-chai": "^2.8.0",
     "style-loader": "^0.21.0",
-    "thymeleaf-inject-webpack-plugin": "github:nkb84/thymeleaf-inject-webpack-plugin",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
     "vue-loader": "^13.3.0",

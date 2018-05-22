@@ -6,5 +6,7 @@ import zpi.flattery.models.User;
 
 @Repository
 public interface UserDao extends JpaRepository<User,Integer> {
-    public boolean existsByEmailAddressOrUserName(String email,String Username);
+    boolean existsByEmailAddressOrUserName(String email,String Username);
+    User findByUserName(String username);
+
 }

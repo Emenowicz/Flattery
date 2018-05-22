@@ -72,16 +72,16 @@
         <div class="form-login" id="form-login">
           <b-form>
             <b-form-group>
-              <b-form-input id="login-input" placeholder="Login" required>
+              <b-form-input id="login-input" placeholder="Użytkownik" v-model="userName" required>
               </b-form-input>
             </b-form-group>
             <b-form-group>
-              <b-form-input id="password-input" placeholder="Hasło" type="password" required>
+              <b-form-input id="password-input" placeholder="Hasło" type="password" v-model="password" required>
               </b-form-input>
             </b-form-group>
             <div>
             </div>
-            <b-button type="submit" class="btn-block" variant="primary">Login</b-button>
+            <b-button @click="submit('login')" type="submit" class="btn-block" variant="primary">Login</b-button>
           </b-form>
         </div>
         <div class="form-password" id="form-password"></div>
@@ -92,13 +92,19 @@
 
 <script>
 /* eslint-disable */
+
+import axios from 'axios';
   export default {
     name: 'App',
     data() {
       return {
         appName: 'Flattery',
         active: null,
-        status: 'not_accepted'
+        status: 'not_accepted',
+
+        // login-data
+        userName: '',
+        password: ''
       }
     }, methods: {
       open: function (which, e) {
@@ -127,6 +133,25 @@
           document.getElementById(this.active + "-form").classList.remove("active");
         }
         this.active = which;
+      },
+      submit: function (which, e) {
+        let data = {form: which};
+        switch(which){
+          case 'login':
+            data.userName = this.userName;
+            data.password = this.password;
+
+            axios.post('/login', {
+              userName: data.userName,
+              password: data.password,
+            }).then(res => {
+              console.log(res);
+              this.$router.replace({path: '/user'});
+            }).catch(e => {
+              console.log(e);
+            });
+            break;
+        }
       }
     }
   }

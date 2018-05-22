@@ -61,7 +61,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<ReportedOffer> reports;
 
-
     public User(String lastName, String firstName, String emailAddress, String userName, String password) {
         this.lastName = lastName;
         this.firstName = firstName;

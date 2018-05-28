@@ -83,6 +83,30 @@
             </configuration>
           </execution>
           <execution>
+            <id>npm install material icons</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <!-- optional: default phase is "generate-resources" -->
+            <phase>generate-resources</phase>
+            <!-- Optional configuration which provides for running any npm command -->
+            <configuration>
+              <arguments>install --save vue-material-design-icons</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm install material list</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <!-- optional: default phase is "generate-resources" -->
+            <phase>generate-resources</phase>
+            <!-- Optional configuration which provides for running any npm command -->
+            <configuration>
+              <arguments>install vuetify --save</arguments>
+            </configuration>
+          </execution>
+          <execution>
             <id>npm install axios</id>
             <goals>
               <goal>npm</goal>

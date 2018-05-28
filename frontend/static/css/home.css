@@ -2,8 +2,8 @@
   min-height: 100%;
   background-image: url('../../static/images/apartment-architecture-carpet-584399.jpg');
   background-size: cover;
+  background-attachment: fixed;
   display: flex;
-  align-items: center;
 }
 
 .search-box{
@@ -15,7 +15,8 @@
 }
 
 .main-section{
-  position: absolute;
+  position: relative;
+  margin-top: 100px;
   top: 0;
   bottom: 0;
   right: 0;

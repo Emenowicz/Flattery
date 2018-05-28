@@ -1,27 +1,15 @@
 .all{
-  min-height: 100%;
   background-image: url('../../static/images/apartment-architecture-carpet-584399.jpg');
   background-size: cover;
   background-attachment: fixed;
   display: flex;
 }
 
-.search-box{
-  margin-top: 40px;
-  padding: 50px 80px 30px 30px;
-  margin-bottom: 100px;
-  border-radius: 5px;
-  background-color: rgba(230, 247, 255, .7);
-}
-
 .main-section{
+  padding-top: 100px;
   position: relative;
-  margin-top: 100px;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
   z-index: 1;
+  height: 100%;
 }
 
 .header {
@@ -30,4 +18,5 @@
 
 .footer {
     z-index: 3;
+
 }

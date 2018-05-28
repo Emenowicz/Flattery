@@ -1,5 +1,5 @@
 <script>
-  /* eslint-disable */
+/* eslint-disable */
   import 'vuetify/dist/vuetify.min.css'
   import axios from 'axios'
   import ShareIcon from "vue-material-design-icons/share-variant.vue"

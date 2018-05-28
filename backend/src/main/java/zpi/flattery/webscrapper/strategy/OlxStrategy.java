@@ -10,7 +10,6 @@ import org.jsoup.select.Elements;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-
 import zpi.flattery.models.Offer;
 import zpi.flattery.models.enums.OfferType;
 import zpi.flattery.models.enums.RoomType;
@@ -21,11 +20,15 @@ import zpi.flattery.webscrapper.util.OlxUtil;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
 
@@ -78,7 +81,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
         if (place != null) {
             place = place.replaceAll("\\s+", "-");
             urlToScrap += "q-" + place;
-            if (query!= null) {
+            if (query != null) {
                 query = query.replaceAll("\\s+", "-");
                 urlToScrap += "-" + query;
             }
@@ -166,7 +169,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
             return true;
 
         LocalDateTime currentDate = LocalDateTime.now();
-        long daysBetween = Duration.between(offer.getPublishingDate().toInstant(), currentDate).toDays();
+        long daysBetween = Duration.between(Instant.parse(offer.getPublishingDate()), currentDate).toDays();
         return daysBetween <= daysOld;
     }
 
@@ -174,7 +177,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
         String title;
         String link;
         double price;
-        Date publishingDate;
+        String publishingDate;
         String photoUrl;
         String place;
 
@@ -209,7 +212,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
             //Extracting date
             Element dateElement = offerElement.select("p[class=color-9 lheight16 marginbott5 x-normal]").first();
             LocalDateTime localDateTime = OlxUtil.getDateFromString(dateElement.text());
-            publishingDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+            publishingDate = localDateTime.format(ofPattern("yyyy-MM-dd hh:mm"));
 
             //Extracting city
             Elements cityElement = offerElement.select("small[class=breadcrumb x-normal]").select("span");
@@ -262,7 +265,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
     }
 
     private Offer combineResponseWithOffer(Offer offer, GeocodeResponse geocodeResponse) {
-        if(!geocodeResponse.status.equals("OVER_QUERY_LIMIT")){
+        if (!geocodeResponse.status.equals("OVER_QUERY_LIMIT")) {
             offer.setCoordinates("lat=" + geocodeResponse.results[0].geometry.location.lat + ", lng=" + geocodeResponse.results[0].geometry.location.lng);
         }
         return offer;

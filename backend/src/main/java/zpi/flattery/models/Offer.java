@@ -7,8 +7,6 @@ import zpi.flattery.models.enums.RoomType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -42,7 +40,7 @@ public class Offer {
     private double price;
 
     @NotNull
-    private Date publishingDate;
+    private String publishingDate;
 
     private char[] mainPhoto;
 
@@ -88,10 +86,9 @@ public class Offer {
         this.title = title;
         this.city = city;
         this.price = price;
-        this.publishingDate = new Date();
     }
 
-    public Offer(User user, String title, String city, double price, Date publishingDate) {
+    public Offer(User user, String title, String city, double price, String publishingDate) {
         this.user = user;
         this.title = title;
         this.city = city;
@@ -99,7 +96,7 @@ public class Offer {
         this.publishingDate = publishingDate;
     }
 
-    public Offer(@NotNull String title, @NotNull String city, String urlToOffer, OfferType offerType, RoomType roomType, @NotNull double price, @NotNull Date publishingDate, String photoUrl) {
+    public Offer(@NotNull String title, @NotNull String city, String urlToOffer, OfferType offerType, RoomType roomType, @NotNull double price, @NotNull String publishingDate, String photoUrl) {
         this.photoUrl = photoUrl;
         this.title = title;
         this.city = city;
@@ -202,11 +199,11 @@ public class Offer {
         this.price = price;
     }
 
-    public Date getPublishingDate() {
+    public String getPublishingDate() {
         return publishingDate;
     }
 
-    public void setPublishingDate(Date publishingDate) {
+    public void setPublishingDate(String publishingDate) {
         this.publishingDate = publishingDate;
     }
 

@@ -17,7 +17,6 @@ import java.util.Observer;
 @RestController
 public class OfferController {
 
-
     @RequestMapping(value = "/offers", produces = "application/json", method = RequestMethod.POST)
     public DeferredResult<List<Offer>> searchForOffers(@RequestBody SearchRequest searchRequest){
 

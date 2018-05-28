@@ -1,5 +1,8 @@
 package zpi.flattery.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -15,26 +18,27 @@ public class User {
     private int userId;
 
     @NotNull
-    @Size(min = 3, max=30)
+    @Size(min = 3, max = 30)
     private String lastName;
 
     @NotNull
-    @Size(min = 3, max=20)
+    @Size(min = 3, max = 20)
     private String firstName;
 
     @NotNull
-    @Size(min = 5, max=30)
+    @Size(min = 5, max = 30)
     @Email
-    @Column(unique=true)
+    @Column(unique = true)
     private String emailAddress;
 
     @NotNull
-    @Size(min = 4, max=20)
-    @Column(unique=true)
+    @Size(min = 4, max = 20)
+    @Column(unique = true)
     private String userName;
 
     @NotNull
-    @Size(min = 6, max=20)
+    @Size(min = 6, max = 20)
+    @JsonIgnore
     @Column(name = "Password")
     private String password;
 
@@ -47,6 +51,7 @@ public class User {
             joinColumns = @JoinColumn(name = "users_idu"),
             inverseJoinColumns = @JoinColumn(name = "offers_ido")
     )
+    @JsonIgnoreProperties({"user", "favouritedByUsers", "reports"})
     private List<Offer> favoriteOffers;
 
     @Column(name = "Longitude")
@@ -56,9 +61,11 @@ public class User {
     private double latitude;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties({"user"})
     private List<Offer> offers;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties({"user"})
     private List<ReportedOffer> reports;
 
     public User(String lastName, String firstName, String emailAddress, String userName, String password) {

@@ -7,6 +7,9 @@ public class LoginForm {
 
     private String password;
 
+    public LoginForm(){
+    }
+
     public LoginForm(String userName, String password) {
         this.userName = userName;
         this.password = password;

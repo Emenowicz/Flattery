@@ -1,5 +1,7 @@
 <template>
   <div id="app">
+    <v-app id="inspire">
+
     <div class="header fixed-top">
       <b-navbar toggleable="md" type="light" variant="light">
         <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
@@ -18,7 +20,7 @@
       </b-navbar>
     </div>
     <div class="text-center all main-section">
-      <router-view></router-view>
+        <router-view></router-view>
     </div>
     <div class="footer fixed-bottom">
       <!-- As a heading -->
@@ -57,7 +59,7 @@
               </b-form-input>
             </b-form-group>
             <b-form-group>
-              <b-form-input id="new-account-name" placeholder="Email" required>
+              <b-form-input id="new-account-email" placeholder="Email" required>
               </b-form-input>
             </b-form-group>
             <b-form-group>
@@ -87,12 +89,15 @@
         <div class="form-password" id="form-password"></div>
       </div>
     </div>
+    </v-app>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
 import axios from 'axios';
+
+import 'vue-material-design-icons/styles.css'
 
   export default {
     name: 'App',
@@ -135,21 +140,18 @@ import axios from 'axios';
         this.active = which;
       },
       submit: function (which, e) {
-        axios.get('/user').then(res => console.log(res));
-        // axios.get('/test').then(res => console.log(res)).catch(error => console.log(error.response));
-        // let data = {form: which};
-        // switch(which){
-        //   case 'login':
-        //     data.userName = this.userName;
-        //     data.password = this.password;
-        //     axios.post('/login', {
-        //       userName: this.userName,
-        //       password: this.password
-        //     }).then(res => {
-        //       console.log(res);
-        //
-        //     }).catch(error => console.log(error.response));
-        // }
+        let data = {form: which};
+        switch(which){
+          case 'login':
+            data.userName = this.userName;
+            data.password = this.password;
+            axios.post('/login', {
+              userName: this.userName,
+              password: this.password
+            }).then(res => {
+              console.log(res);
+            }).catch(error => console.log(error.response));
+        }
       }
     }
   }

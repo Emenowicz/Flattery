@@ -22,6 +22,7 @@
 </template>
 
 <script>
+
 /* eslint-disable */
   export default {
     name: 'Search',
@@ -31,7 +32,7 @@
         }},
         methods: {
             routeToList: function (event) {
-            this.$router.replace({ path:'/recyclerview', query: { search: this.searchInput}})
+            this.$router.replace({ path:'/offers', query: { search: this.searchInput}})
             }
         }
   }

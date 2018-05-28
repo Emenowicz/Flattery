@@ -16,6 +16,7 @@ import zpi.flattery.repository.UserDao;
 import javax.annotation.Resource;
 
 import java.security.Principal;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -37,7 +38,7 @@ public class UserDataServiceTest {
         Principal principal = new PrincipalImpl("Test");
 
 
-        when(userDao.findByUserName(anyString())).thenReturn(user);
+        when(userDao.findByUserName(anyString())).thenReturn(Optional.of(user));
 
         User result = userDataService.getDataForLoggedUser(principal);
 
@@ -46,7 +47,7 @@ public class UserDataServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void shouldThrowNullPointer() throws NotFoundException {
-        when(userDao.findByUserName(anyString())).thenReturn(null);
+        when(userDao.findByUserName(anyString())).thenReturn(Optional.empty());
         Principal principal = new PrincipalImpl("Test");
 
         userDataService.getDataForLoggedUser(principal);

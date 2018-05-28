@@ -7,6 +7,7 @@ import zpi.flattery.repository.UserDao;
 
 import javax.annotation.Resource;
 import java.security.Principal;
+import java.util.Optional;
 
 @Service
 public class UserDataService {
@@ -16,10 +17,11 @@ public class UserDataService {
 
     public User getDataForLoggedUser(Principal principal) throws NotFoundException {
 
-        User user = userDao.findByUserName(principal.getName());
-        if (user == null) {
-            throw new NotFoundException("User data not found");
+        Optional<User> user = userDao.findByUserName(principal.getName());
+        if (!user.isPresent()) {
+            throw new NotFoundException("User is not found");
         }
-        return user;
+
+        return user.get();
     }
 }

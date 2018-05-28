@@ -74,16 +74,16 @@
         <div class="form-login" id="form-login">
           <b-form>
             <b-form-group>
-              <b-form-input id="login-input" placeholder="Login" required>
+              <b-form-input id="login-input" placeholder="Użytkownik" v-model="userName" required>
               </b-form-input>
             </b-form-group>
             <b-form-group>
-              <b-form-input id="password-input" placeholder="Hasło" type="password" required>
+              <b-form-input id="password-input" placeholder="Hasło" type="password" v-model="password" required>
               </b-form-input>
             </b-form-group>
             <div>
             </div>
-            <b-button type="submit" class="btn-block" variant="primary">Login</b-button>
+            <b-button @click="submit('login')" type="submit" class="btn-block" variant="primary">Login</b-button>
           </b-form>
         </div>
         <div class="form-password" id="form-password"></div>
@@ -95,6 +95,8 @@
 
 <script>
 /* eslint-disable */
+import axios from 'axios';
+
 import 'vue-material-design-icons/styles.css'
 
   export default {
@@ -103,7 +105,11 @@ import 'vue-material-design-icons/styles.css'
       return {
         appName: 'Flattery',
         active: null,
-        status: 'not_accepted'
+        status: 'not_accepted',
+
+        // login-data
+        userName: '',
+        password: ''
       }
     }, methods: {
       open: function (which, e) {
@@ -132,6 +138,20 @@ import 'vue-material-design-icons/styles.css'
           document.getElementById(this.active + "-form").classList.remove("active");
         }
         this.active = which;
+      },
+      submit: function (which, e) {
+        let data = {form: which};
+        switch(which){
+          case 'login':
+            data.userName = this.userName;
+            data.password = this.password;
+            axios.post('/login', {
+              userName: this.userName,
+              password: this.password
+            }).then(res => {
+              console.log(res);
+            }).catch(error => console.log(error.response));
+        }
       }
     }
   }

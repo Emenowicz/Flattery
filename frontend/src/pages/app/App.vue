@@ -99,8 +99,6 @@ import axios from 'axios';
 
 import 'vue-material-design-icons/styles.css'
 
-import 'vue-material-design-icons/styles.css'
-
   export default {
     name: 'App',
     data() {

@@ -31,14 +31,7 @@ public class LoginController {
         } catch (AuthenticationCredentialsNotFoundException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.FORBIDDEN);
         }
-
-        return new ResponseEntity("Logged in", HttpStatus.OK);
+        return new ResponseEntity("User " + loginForm.getUserName() + "  has logged in", HttpStatus.OK);
     }
-
-    @RequestMapping(value = "/user")
-    public String loggedUser() {
-        return "You are logged in!";
-    }
-
 
 }

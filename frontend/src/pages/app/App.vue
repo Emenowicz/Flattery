@@ -92,8 +92,8 @@
 
 <script>
 /* eslint-disable */
-
 import axios from 'axios';
+
   export default {
     name: 'App',
     data() {
@@ -135,23 +135,21 @@ import axios from 'axios';
         this.active = which;
       },
       submit: function (which, e) {
-        let data = {form: which};
-        switch(which){
-          case 'login':
-            data.userName = this.userName;
-            data.password = this.password;
-
-            axios.post('/login', {
-              userName: data.userName,
-              password: data.password,
-            }).then(res => {
-              console.log(res);
-              this.$router.replace({path: '/user'});
-            }).catch(e => {
-              console.log(e);
-            });
-            break;
-        }
+        axios.get('/user').then(res => console.log(res));
+        // axios.get('/test').then(res => console.log(res)).catch(error => console.log(error.response));
+        // let data = {form: which};
+        // switch(which){
+        //   case 'login':
+        //     data.userName = this.userName;
+        //     data.password = this.password;
+        //     axios.post('/login', {
+        //       userName: this.userName,
+        //       password: this.password
+        //     }).then(res => {
+        //       console.log(res);
+        //
+        //     }).catch(error => console.log(error.response));
+        // }
       }
     }
   }

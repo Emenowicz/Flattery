@@ -3,6 +3,7 @@ import App from './pages/app/App.vue'
 import BootstrapVue from 'bootstrap-vue'
 import axios from 'axios'
 import Vuetify from 'vuetify'
+import Vuelidate from 'vuelidate'
 import MenuIcon from 'vue-material-design-icons/menu.vue'
 
 import router from './router/router'
@@ -11,10 +12,10 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.config.productionTip = false
 
-Vue.use(MenuIcon)
 Vue.use(BootstrapVue)
 Vue.use(axios)
 Vue.use(Vuetify)
+Vue.use(Vuelidate)
 
 /* eslint-disable */
 new Vue({

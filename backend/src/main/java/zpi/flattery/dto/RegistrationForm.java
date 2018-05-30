@@ -31,6 +31,8 @@ public class RegistrationForm {
         this.emailAddress = emailAddress;
     }
 
+    public RegistrationForm(){};
+
     @AssertTrue(message = "Password does not match")
     public boolean isPasswordMatching() {
         return confirmPassword.equals(password);

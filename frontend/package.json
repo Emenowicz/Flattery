@@ -17,10 +17,12 @@
     "@material/list": "^0.35.0",
     "@mdi/font": "^2.4.85",
     "axios": "^0.18.0",
+    "bootstrap-validator": "^0.11.9",
     "bootstrap-vue": "^2.0.0-rc.11",
     "vue": "^2.5.2",
-    "vue-material-design-icons": "^1.4.0",
+    "vue-material-design-icons": "^1.5.1",
     "vue-router": "^3.0.1",
+    "vuelidate": "^0.7.4",
     "vuetify": "^1.0.18"
   },
   "devDependencies": {

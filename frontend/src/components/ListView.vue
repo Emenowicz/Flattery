@@ -2,10 +2,9 @@
 /* eslint-disable */
   import 'vuetify/dist/vuetify.min.css'
   import axios from 'axios'
-  import ShareIcon from "vue-material-design-icons/share-variant.vue"
-  import HeartOutlineIcon from "vue-material-design-icons/heart-outline.vue"
-  import HeartIcon from "vue-material-design-icons/heart.vue"
-
+  import ShareIcon from 'vue-material-design-icons/share-variant.vue'
+  import HeartOutlineIcon from 'vue-material-design-icons/heart-outline.vue'
+  import HeartIcon from 'vue-material-design-icons/heart.vue'
 
   export default {
     name: 'ListView',

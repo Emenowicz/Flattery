@@ -20,3 +20,15 @@
     z-index: 3;
 
 }
+
+.register-complete-container {
+  padding-top: 16px;
+}
+
+.register-complete-text {
+  display: flex;           /* establish flex container */
+  flex-direction: column;  /* make main axis vertical */
+  justify-content: center; /* center items vertically, in this case */
+  align-items: center;
+  height: 48px
+}

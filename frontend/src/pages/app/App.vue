@@ -21,95 +21,198 @@
     </div>
     <div class="text-center all main-section">
         <router-view></router-view>
-    </div>
-    <div class="footer fixed-bottom">
-      <!-- As a heading -->
-      <b-navbar variant="light" type="light" class="page-footer m-0 p-0">
-        <b-navbar-brand class="ml-2">
-          <small>Flattery web app-brand &copy;</small>
-        </b-navbar-brand>
-      </b-navbar>
-    </div>
-    <div class="login-register-container" id="login-register" v-on:click.prevent="close">
-      <div class="login-register-modal">
-        <ul class="form-switcher">
-          <li v-on:click.prevent="flip('login',$event)"><a id="login-form" href="#">Login</a></li>
-          <li v-on:click.prevent="flip('register',$event)"><a id="register-form" href="#">Register</a></li>
-        </ul>
-        <div class="form-register" id="form-register">
-          <b-form>
-            <b-form-group>
-              <b-form-input id="new-account-name" placeholder="Imię" required>
-              </b-form-input>
-            </b-form-group>
-            <b-form-group>
-              <b-form-input id="new-account-surname" placeholder="Nazwisko" required>
-              </b-form-input>
-            </b-form-group>
-            <b-form-group>
-              <b-form-input id="new-account-login" placeholder="Login" required>
-              </b-form-input>
-            </b-form-group>
-            <b-form-group>
-              <b-form-input id="new-account-password" placeholder="Hasło" required>
-              </b-form-input>
-            </b-form-group>
-            <b-form-group>
-              <b-form-input id="new-account-password-two" placeholder="Powtórz Hasło" required>
-              </b-form-input>
-            </b-form-group>
-            <b-form-group>
-              <b-form-input id="new-account-email" placeholder="Email" required>
-              </b-form-input>
-            </b-form-group>
-            <b-form-group>
-              <div>Rejestrując się akceptujesz <a href="#" v-b-modal.modal1>Regulamin</a></div>
-              <b-modal id="modal1">
-                Regulamin
-              </b-modal>
-            </b-form-group>
-            <b-button type="submit" class="btn-block" variant="primary">Zarejestruj się</b-button>
-          </b-form>
-        </div>
-        <div class="form-login" id="form-login">
-          <b-form>
-            <b-form-group>
-              <b-form-input id="login-input" placeholder="Użytkownik" v-model="userName" required>
-              </b-form-input>
-            </b-form-group>
-            <b-form-group>
-              <b-form-input id="password-input" placeholder="Hasło" type="password" v-model="password" required>
-              </b-form-input>
-            </b-form-group>
-            <div>
-            </div>
-            <b-button @click="submit('login')" type="submit" class="btn-block" variant="primary">Login</b-button>
-          </b-form>
-        </div>
-        <div class="form-password" id="form-password"></div>
       </div>
-    </div>
+      <div class="footer fixed-bottom">
+        <!-- As a heading -->
+        <b-navbar variant="light" type="light" class="page-footer m-0 p-0">
+          <b-navbar-brand class="ml-2">
+            <small>Flattery web app-brand &copy;</small>
+          </b-navbar-brand>
+        </b-navbar>
+      </div>
+      <div class="login-register-container" id="login-register" v-on:click.prevent="close">
+        <div class="login-register-modal">
+          <ul class="form-switcher">
+            <li v-on:click.prevent="flip('login',$event)"><a id="login-form" href="#">Login</a></li>
+            <li v-on:click.prevent="flip('register',$event)"><a id="register-form" href="#">Register</a></li>
+          </ul>
+          <div class="form-register" id="form-register">
+            <!--Register confirmation if completed-->
+            <div v-if="registrationCompleted">
+              <v-container class="register-complete-container">
+                <v-layout row justify-center>
+                  <v-flex xs1>
+                    <div>
+                      <img src="/static/images/check-circle.png"/>
+                    </div>
+                  </v-flex>
+                  <v-flex xs5 class="register-complete-text">
+                    <div class="black--text h6">Registration successful!</div>
+                  </v-flex>
+                </v-layout>
+                <v-layout row justify-center>
+                  <b-button class="btn btn-outline-secondary" v-on:click="closeLoginRegisterPopup">CLOSE</b-button>
+                </v-layout>
+              </v-container>
+            </div>
+            <!--Register form if registration is not completed yet-->
+            <b-form v-else>
+              <b-form-group>
+                <b-form-input id="new-account-name" placeholder="Imię" v-model="firstName"/>
+                <span
+                  v-if="$v.$dirty && $v.firstName.$invalid"
+                  class="alert alert-danger">{{ firstNameErrorMessage }}</span>
+              </b-form-group>
+
+              <b-form-group>
+                <b-form-input id="new-account-surname" placeholder="Nazwisko" v-model="lastName"/>
+                <span
+                  v-if="$v.$dirty && $v.lastName.$invalid"
+                  class="alert alert-danger">{{ lastNameErrorMessage }}</span>
+              </b-form-group>
+
+              <b-form-group>
+                <b-form-input id="new-account-login" placeholder="Login" v-model="userName"/>
+                <span
+                  v-if="$v.$dirty && $v.userName.$invalid"
+                  class="alert alert-danger">{{ userNameErrorMessage }}</span>
+              </b-form-group>
+
+              <b-form-group>
+                <b-form-input id="new-account-password" placeholder="Hasło" v-model="password" type="password"/>
+                <span
+                  v-if="$v.$dirty && $v.password.$invalid"
+                  class="alert alert-danger">{{ passwordErrorMessage }}</span>
+              </b-form-group>
+
+              <b-form-group>
+                <b-form-input id="new-account-password-two" placeholder="Powtórz Hasło" v-model="confirmPassword" type="password"/>
+                <span
+                  v-if="$v.$dirty && $v.confirmPassword.$invalid"
+                  class="alert alert-danger">{{ confirmPasswordErrorMessage }}</span>
+              </b-form-group>
+
+              <b-form-group>
+                <b-form-input id="new-account-email" placeholder="Email" v-model="emailAddress"/>
+                <span
+                  v-if="$v.$dirty && $v.emailAddress.$invalid"
+                  class="alert alert-danger">{{ emailAddressErrorMessage }}</span>
+              </b-form-group>
+
+              <b-form-group>
+                <input type="checkbox" id="new-account-terms"
+                                 v-model="terms"/>
+                  Oświadczam, że zapoznałem się z Regulaminem portalu Flattery.pl i akceptuję jego treść.
+                  <span
+                    v-if="$v.$dirty && $v.terms.$invalid"
+                    class="alert alert-danger">{{ termsErrorMessage }}</span>
+              </b-form-group>
+
+              <b-button v-on:click="onRegister" type="submit" class="btn-block" variant="primary">Zarejestruj się</b-button>
+            </b-form>
+          </div>
+          <div class="form-login" id="form-login">
+            <b-form>
+              <b-form-group>
+                <b-form-input id="login-input" placeholder="Login" required>
+                </b-form-input>
+              </b-form-group>
+              <b-form-group>
+                <b-form-input id="password-input" placeholder="Hasło" type="password" required>
+                </b-form-input>
+              </b-form-group>
+              <div>
+              </div>
+              <b-button type="submit" class="btn-block" variant="primary">Login</b-button>
+            </b-form>
+          </div>
+          <div class="form-password" id="form-password"></div>
+        </div>
+      </div>
     </v-app>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
-import axios from 'axios';
+  import 'vuetify/dist/vuetify.min.css'
+  import 'vue-material-design-icons/styles.css'
+  import axios from 'axios'
+  import CheckCircleIcon from 'vue-material-design-icons/check-circle.vue'
+  import {required, sameAs, minLength, maxLength, email} from 'vuelidate/lib/validators'
+  import {helpers} from 'vuelidate/lib/validators'
 
-import 'vue-material-design-icons/styles.css'
+  const passwordRegex = helpers.regex('passwordRegex', /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{6,}/)
 
   export default {
     name: 'App',
+    components: {
+      CheckCircleIcon
+    },
+    computed: {
+      firstNameErrorMessage () {
+        if (!this.$v.firstName.required) {
+          return 'Imię nie może być puste.'
+        }else if(!this.$v.firstName.minLength){
+          return 'Imię jest za krókie. (Minimalna długość wynosi ' + this.$v.firstName.$params.minLength.min + ')';
+        }
+      },
+      lastNameErrorMessage () {
+        if (!this.$v.lastName.required) {
+          return 'Nazwisko nie może być puste.'
+        }else if(!this.$v.lastName.minLength){
+          return 'Nazwisko jest za krótkie. (Minimalna długość wynosi ' + this.$v.lastName.$params.minLength.min + ')';
+        }
+      },
+      userNameErrorMessage () {
+        if (!this.$v.userName.required) {
+          return 'Login nie może być pusty.'
+        }else if(!this.$v.userName.minLength){
+          return 'Login jest za krótki. (Minimalna długość wynosi ' + this.$v.userName.$params.minLength.min + ')';
+        }
+      },
+      passwordErrorMessage () {
+        if (!this.$v.password.required) {
+          return 'Hasło nie może być puste.'
+        }else if(!this.$v.password.minLength){
+          return 'Hasło jest za krótkie. (Minimalna długość wynosi ' + this.$v.password.$params.minLength.min + ')';
+        }else if(!this.$v.password.passwordRegex){
+          return 'Hasło jest za łatwe. Powinno zawierać jedną małą literę, dużą literę, znak specjalny.';
+        }
+      },
+      confirmPasswordErrorMessage () {
+        if (!this.$v.confirmPassword.required) {
+          return 'Hasło nie może być puste'
+        }else if(!this.$v.confirmPassword.sameAsPassword){
+          return 'Podane hasła nie są identyczne';
+        }
+      },
+      emailAddressErrorMessage () {
+        if (!this.$v.emailAddress.required) {
+          return 'Email nie może być pusty.'
+        }else if(!this.$v.emailAddress.email){
+          return 'Podany email jest niepoprawny.';
+        }
+      },
+      termsErrorMessage() {
+        if (!this.terms) {
+          return 'Musisz zaakceptować regulamin.'
+        }
+      }
+    },
     data() {
       return {
         appName: 'Flattery',
         active: null,
         status: 'not_accepted',
-
-        // login-data
+        registrationCompleted: false,
+        firstName: '',
+        lastName: '',
         userName: '',
-        password: ''
+        password: '',
+        confirmPassword: '',
+        emailAddress: '',
+        terms: false
       }
     }, methods: {
       open: function (which, e) {
@@ -152,6 +255,60 @@ import 'vue-material-design-icons/styles.css'
               console.log(res);
             }).catch(error => console.log(error.response));
         }
+      },
+      async onRegister() {
+        //validating fields
+        this.$v.$touch();
+        //if validated registration begins
+        if (!this.$v.$invalid) {
+          try {
+            await axios.post(`http://127.0.0.1:8088/register`, {
+              firstName: this.firstName,
+              lastName: this.lastName,
+              userName: this.userName,
+              password: this.password,
+              confirmPassword: this.confirmPassword,
+              emailAddress: this.emailAddress
+            }).then(result => {
+              this.registrationCompleted = true;
+              console.log(result.status)
+            })
+          } catch (e) {
+            console.log(e.message)
+          }
+        }
+      },
+      closeLoginRegisterPopup() {
+        document.getElementById("login-register").classList.remove("active");
+        //inside setTimeout function "this" is referring to something else
+        let self = this;
+        setTimeout(function() {
+          self.firstName = self.lastName = self.userName = self.password = self.confirmPassword = self.emailAddress = '';
+          self.registrationCompleted = false;
+        }, 2000);
+      }
+    },
+    validations: {
+      firstName: {
+        required, minLength: minLength(3), maxLength: maxLength(20)
+      },
+      lastName: {
+        required, minLength: minLength(3), maxLength: maxLength(30)
+      },
+      userName: {
+        required, minLength: minLength(4), maxLength: maxLength(20)
+      },
+      password: {
+        required, minLength: minLength(6), maxLength: maxLength(20), passwordRegex
+      },
+      confirmPassword: {
+        required, sameAsPassword: sameAs('password')
+      },
+      emailAddress: {
+        required, email, maxLength: maxLength(70)
+      },
+      terms: {
+        required
       }
     }
   }

@@ -4,6 +4,7 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import zpi.flattery.dto.LoginForm;
 import zpi.flattery.models.User;
@@ -18,13 +19,14 @@ public class LoginService implements UserDetailsService {
 
 
     @Resource
-    private
-    UserDao userDao;
+    private UserDao userDao;
+    @Resource
+    private PasswordEncoder passwordEncoder;
 
     public User getUser(LoginForm loginForm) throws Exception {
         Optional<User> user = userDao.findByUserName(loginForm.getUserName());
         if (user.isPresent()) {
-            if (user.get().getPassword().equals(loginForm.getPassword())) {
+            if(passwordEncoder.matches(loginForm.getPassword(),user.get().getPassword())){
                 return user.get();
             }
         }

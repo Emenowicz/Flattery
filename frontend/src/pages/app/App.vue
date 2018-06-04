@@ -19,9 +19,9 @@
             </b-navbar-nav>
 
             <b-navbar-nav class="ml-auto" v-else>
-              <b-nav-text class="mr-4 navbar-text navbar-font">Witaj Userze</b-nav-text>
-              <b-nav-item href="#" class="mr-4"><p
-                class="navbar-link navbar-font">
+              <b-nav-item class="mr4 navbar-link navbar-font">{{ user.userName }}</b-nav-item>
+              <b-nav-item href="#" class="mr-4">
+                <p class="navbar-link navbar-font">
                 Wyloguj się</p></b-nav-item>
             </b-navbar-nav>
           </b-collapse>
@@ -135,6 +135,9 @@
                   v-if="$v.loginPassword.$dirty&& $v.loginPassword.$error"
                   class="alert alert-danger">{{ loginPasswordErrorMessage }}</span>
               </b-form-group>
+              <span
+                v-if="$v.loginGroup.$dirty && hasLoginError"
+                class="alert alert-danger">{{ loginErrorMessage }}</span>
               <b-button type="submit" class="btn-block" variant="primary" v-on:click="onLogin">Zaloguj się</b-button>
             </b-form>
           </div>
@@ -146,7 +149,9 @@
 </template>
 
 <script>
+// @formatter:off
 /* eslint-disable */
+// @formatter:on
   import 'vuetify/dist/vuetify.min.css'
   import 'vue-material-design-icons/styles.css'
   import axios from 'axios'
@@ -154,7 +159,7 @@
   import {required, sameAs, minLength, maxLength, email} from 'vuelidate/lib/validators'
   import {helpers} from 'vuelidate/lib/validators'
 
-  const passwordRegex = helpers.regex('passwordRegex', /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{6,}/)
+  const passwordRegex = helpers.regex('passwordRegex', /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!,%*?&])[A-Za-z\d$@$!%*?&]{6,}/)
 
   export default {
     name: 'App',
@@ -214,18 +219,15 @@
       loginPasswordErrorMessage() {
         if (!this.$v.loginPassword.required) {
           return 'Hasło nie może być puste.'
-        } else if (!this.$v.loginPassword.minLength) {
-          return 'Hasło jest za krótkie. (Minimalna długość wynosi ' + this.$v.loginPassword.$params.minLength.min + ')';
-        } else if (!this.$v.loginPassword.passwordRegex) {
-          return 'Hasło musi zawierać zawierać jedną małą i dużą literę oraz znak specjalny.';
         }
       },
       loginUserNameErrorMessage() {
         if (!this.$v.loginUserName.required) {
           return 'Login nie może być pusty.'
-        } else if (!this.$v.loginUserName.minLength) {
-          return 'Login jest za krótki. (Minimalna długość wynosi ' + this.$v.loginUserName.$params.minLength.min + ')';
         }
+      },
+      loginErrorMessage() {
+        return "Podane dane są niepoprawne."
       }
     },
     data() {
@@ -233,7 +235,8 @@
         appName: 'Flattery',
         active: null,
         status: 'not_accepted',
-        isAuthenticated:  false,
+        user: null,
+        isAuthenticated: false,
         registrationCompleted: false,
         //registration fields
         firstName: '',
@@ -245,7 +248,8 @@
         terms: false,
         //login fields
         loginUserName: '',
-        loginPassword: ''
+        loginPassword: '',
+        hasLoginError: false
       }
     },
     methods: {
@@ -276,7 +280,19 @@
         }
         this.active = which;
       },
+      async checkIfAuthenticated() {
+        try {
+          await axios.get(`http://127.0.0.1:8088/loggedUserData`, {}).then(result => {
+            console.log(result.data);
+            this.user = result.data;
+            this.isAuthenticated = true;
+          })
+        } catch (e) {
+          this.isAuthenticated = false;
+        }
+      },
       async onLogin() {
+        this.hasLoginError = false;
         this.$v.loginGroup.$touch();
         //if validated login process begins
         if (!this.$v.loginGroup.$invalid) {
@@ -286,24 +302,14 @@
               password: this.password
             }).then(res => {
               this.isAuthenticated = true;
-
+              this.user = res;
               this.closeLoginRegisterPopup();
               console.log(res);
             });
           } catch (e) {
             console.log(e.message + '\nStatus: ' + e.status)
+            this.hasLoginError = true;
           }
-        }
-      },
-      async checkIfAuthenticated(){
-        try {
-          await axios.get(`http://127.0.0.1:8088/loggedUserData`, {
-          }).then(result => {
-            console.log(result.data);
-            this.isAuthenticated = true;
-          })
-        } catch (e) {
-          this.isAuthenticated = false;
         }
       },
       async onRegister() {
@@ -339,7 +345,7 @@
       }
     },
     // is called onPageLoad
-    mounted(){
+    mounted() {
       this.checkIfAuthenticated();
     },
     validations: {
@@ -364,13 +370,13 @@
       terms: {
         required
       },
-      loginUserName: {
-        required, minLength: minLength(4), maxLength: maxLength(20)
-      },
       loginPassword: {
-        required, minLength: minLength(6), maxLength: maxLength(20), passwordRegex
+        required
       },
-      loginGroup: ['loginUserName', 'loginPassword'],
+      loginUserName: {
+        required
+      },
+      loginGroup: ['loginPassword', 'loginUserName'],
       registerGroup: ['firstName', 'lastName', 'userName', 'password', 'confirmPassword', 'emailAddress', 'terms']
     }
   }

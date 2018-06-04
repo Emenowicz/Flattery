@@ -21,6 +21,9 @@ public class UserDataController {
     @RequestMapping(value = "/loggedUserData", method = RequestMethod.GET)
     public ResponseEntity getUserData(Principal principal) {
         User user;
+        if(principal == null){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
         try {
             user = userDataService.getDataForLoggedUser(principal);
         } catch (NotFoundException e) {

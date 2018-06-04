@@ -13,13 +13,11 @@
         isLoaded: false,
         searchInput: '',
         fetchedOffers: [],
-        isAuthenticated: false
       }
     },
-    computed: {
-      checkForAuth() {
-        return this.$parent.isAuthenticated;
-      }
+    props: {
+      search: null,
+      auth: null
     },
     methods: {
       async searchOffers() {
@@ -31,8 +29,8 @@
             minPrice: '700',
             maxPrice: '2000'
           }).then(result => {
-            console.log(result.data)
-            this.fetchedOffers = result.data
+            console.log(result.data);
+            this.fetchedOffers = result.data;
             this.isLoaded = true
           })
         } catch (e) {
@@ -55,10 +53,6 @@
           console.log(e.message)
         }
       }
-    },
-    props: {
-      search: null,
-      auth: null
     },
     components: {
       ShareIcon, HeartOutlineIcon, HeartIcon

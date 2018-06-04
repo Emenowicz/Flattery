@@ -300,11 +300,11 @@
             await axios.post('http://127.0.0.1:8088/login', {
               userName: this.userName,
               password: this.password
-            }).then(res => {
+            }).then(result => {
               this.isAuthenticated = true;
-              this.user = res;
+              this.user = result.data;
               this.closeLoginRegisterPopup();
-              console.log(res);
+              console.log(result.data);
             });
           } catch (e) {
             console.log(e.message + '\nStatus: ' + e.status)

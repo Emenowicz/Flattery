@@ -5,7 +5,7 @@
       <div class="header fixed-top">
         <b-navbar toggleable="md" type="light" variant="light">
           <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-          <b-navbar-brand href="#" class="ml-4"><p class="logo nav-font">{{ appName }}</p></b-navbar-brand>
+          <b-navbar-brand href="/" class="ml-4"><p class="logo nav-font">{{ appName }}</p></b-navbar-brand>
           <b-collapse is-nav id="nav_collapse">
 
             <!-- Right aligned nav items -->

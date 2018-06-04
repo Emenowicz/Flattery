@@ -2,25 +2,33 @@
   <div id="app">
     <v-app id="inspire">
 
-    <div class="header fixed-top">
-      <b-navbar toggleable="md" type="light" variant="light">
-        <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-        <b-navbar-brand href="#" class="ml-4"><p class="logo nav-font">{{ appName }}</p></b-navbar-brand>
-        <b-collapse is-nav id="nav_collapse">
-          <!-- Right aligned nav items -->
-          <b-navbar-nav class="ml-auto">
-            <b-nav-item href="#" class="mr-4" v-on:click.prevent="open('login',$event)"><p
-              class="navbar-link navbar-font">
-              Zaloguj się</p></b-nav-item>
-            <b-nav-item href="#" class="mr-4" v-on:click.prevent="open('register',$event)"><p
-              class="navbar-link navbar-font">
-              Zarejestruj się</p></b-nav-item>
-          </b-navbar-nav>
-        </b-collapse>
-      </b-navbar>
-    </div>
-    <div class="text-center all main-section">
-        <router-view></router-view>
+      <div class="header fixed-top">
+        <b-navbar toggleable="md" type="light" variant="light">
+          <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+          <b-navbar-brand href="#" class="ml-4"><p class="logo nav-font">{{ appName }}</p></b-navbar-brand>
+          <b-collapse is-nav id="nav_collapse">
+
+            <!-- Right aligned nav items -->
+            <b-navbar-nav class="ml-auto" v-if="!isAuthenticated">
+              <b-nav-item href="#" class="mr-4" v-on:click.prevent="open('login',$event)"><p
+                class="navbar-link navbar-font">
+                Zaloguj się</p></b-nav-item>
+              <b-nav-item href="#" class="mr-4" v-on:click.prevent="open('register',$event)"><p
+                class="navbar-link navbar-font">
+                Zarejestruj się</p></b-nav-item>
+            </b-navbar-nav>
+
+            <b-navbar-nav class="ml-auto" v-else>
+              <b-nav-text class="mr-4 navbar-text navbar-font">Witaj Userze</b-nav-text>
+              <b-nav-item href="#" class="mr-4"><p
+                class="navbar-link navbar-font">
+                Wyloguj się</p></b-nav-item>
+            </b-navbar-nav>
+          </b-collapse>
+        </b-navbar>
+      </div>
+      <div class="text-center all main-section">
+        <router-view :auth="isAuthenticated"></router-view>
       </div>
       <div class="footer fixed-bottom">
         <!-- As a heading -->
@@ -60,70 +68,74 @@
               <b-form-group>
                 <b-form-input id="new-account-name" placeholder="Imię" v-model="firstName"/>
                 <span
-                  v-if="$v.$dirty && $v.firstName.$invalid"
+                  v-if="$v.registerGroup.$dirty && $v.firstName.$invalid"
                   class="alert alert-danger">{{ firstNameErrorMessage }}</span>
               </b-form-group>
 
               <b-form-group>
                 <b-form-input id="new-account-surname" placeholder="Nazwisko" v-model="lastName"/>
                 <span
-                  v-if="$v.$dirty && $v.lastName.$invalid"
+                  v-if="$v.registerGroup.$dirty && $v.lastName.$invalid"
                   class="alert alert-danger">{{ lastNameErrorMessage }}</span>
               </b-form-group>
 
               <b-form-group>
                 <b-form-input id="new-account-login" placeholder="Login" v-model="userName"/>
                 <span
-                  v-if="$v.$dirty && $v.userName.$invalid"
+                  v-if="$v.registerGroup.$dirty && $v.userName.$invalid"
                   class="alert alert-danger">{{ userNameErrorMessage }}</span>
               </b-form-group>
 
               <b-form-group>
                 <b-form-input id="new-account-password" placeholder="Hasło" v-model="password" type="password"/>
                 <span
-                  v-if="$v.$dirty && $v.password.$invalid"
+                  v-if="$v.registerGroup.$dirty && $v.password.$invalid"
                   class="alert alert-danger">{{ passwordErrorMessage }}</span>
               </b-form-group>
 
               <b-form-group>
-                <b-form-input id="new-account-password-two" placeholder="Powtórz Hasło" v-model="confirmPassword" type="password"/>
+                <b-form-input id="new-account-password-two" placeholder="Powtórz Hasło" v-model="confirmPassword"
+                              type="password"/>
                 <span
-                  v-if="$v.$dirty && $v.confirmPassword.$invalid"
+                  v-if="$v.registerGroup.$dirty && $v.confirmPassword.$invalid"
                   class="alert alert-danger">{{ confirmPasswordErrorMessage }}</span>
               </b-form-group>
 
               <b-form-group>
                 <b-form-input id="new-account-email" placeholder="Email" v-model="emailAddress"/>
                 <span
-                  v-if="$v.$dirty && $v.emailAddress.$invalid"
+                  v-if="$v.registerGroup.$dirty && $v.emailAddress.$invalid"
                   class="alert alert-danger">{{ emailAddressErrorMessage }}</span>
               </b-form-group>
 
               <b-form-group>
                 <input type="checkbox" id="new-account-terms"
-                                 v-model="terms"/>
-                  Oświadczam, że zapoznałem się z Regulaminem portalu Flattery.pl i akceptuję jego treść.
-                  <span
-                    v-if="$v.$dirty && $v.terms.$invalid"
-                    class="alert alert-danger">{{ termsErrorMessage }}</span>
+                       v-model="terms"/>
+                Oświadczam, że zapoznałem się z Regulaminem portalu Flattery.pl i akceptuję jego treść.
+                <span
+                  v-if="$v.$dirty && $v.terms.$invalid"
+                  class="alert alert-danger">{{ termsErrorMessage }}</span>
               </b-form-group>
 
-              <b-button v-on:click="onRegister" type="submit" class="btn-block" variant="primary">Zarejestruj się</b-button>
+              <b-button v-on:click="onRegister" type="submit" class="btn-block" variant="primary">Zarejestruj się
+              </b-button>
             </b-form>
           </div>
           <div class="form-login" id="form-login">
             <b-form>
               <b-form-group>
-                <b-form-input id="login-input" placeholder="Login" required>
-                </b-form-input>
+                <b-form-input id="login-input" placeholder="Login" v-model="loginUserName"/>
+                <span
+                  v-if="$v.loginUserName.$dirty && $v.loginUserName.$error"
+                  class="alert alert-danger">{{ loginUserNameErrorMessage }}</span>
               </b-form-group>
               <b-form-group>
-                <b-form-input id="password-input" placeholder="Hasło" type="password" required>
-                </b-form-input>
+                <b-form-input id="password-input" placeholder="Hasło" type="password" v-model="loginPassword"/>
+                <span
+                  v-if="$v.loginPassword.$dirty&& $v.loginPassword.$error"
+                  class="alert alert-danger">{{ loginPasswordErrorMessage }}</span>
               </b-form-group>
-              <div>
-              </div>
-              <b-button type="submit" class="btn-block" variant="primary">Login</b-button>
+              <b-button type="submit" class="btn-block" variant="primary" v-on:click="onLogin">Zaloguj się</b-button>
             </b-form>
           </div>
           <div class="form-password" id="form-password"></div>
@@ -150,53 +162,69 @@
       CheckCircleIcon
     },
     computed: {
-      firstNameErrorMessage () {
+      firstNameErrorMessage() {
         if (!this.$v.firstName.required) {
           return 'Imię nie może być puste.'
-        }else if(!this.$v.firstName.minLength){
+        } else if (!this.$v.firstName.minLength) {
           return 'Imię jest za krókie. (Minimalna długość wynosi ' + this.$v.firstName.$params.minLength.min + ')';
         }
       },
-      lastNameErrorMessage () {
+      lastNameErrorMessage() {
         if (!this.$v.lastName.required) {
           return 'Nazwisko nie może być puste.'
-        }else if(!this.$v.lastName.minLength){
+        } else if (!this.$v.lastName.minLength) {
           return 'Nazwisko jest za krótkie. (Minimalna długość wynosi ' + this.$v.lastName.$params.minLength.min + ')';
         }
       },
-      userNameErrorMessage () {
+      userNameErrorMessage() {
         if (!this.$v.userName.required) {
           return 'Login nie może być pusty.'
-        }else if(!this.$v.userName.minLength){
+        } else if (!this.$v.userName.minLength) {
           return 'Login jest za krótki. (Minimalna długość wynosi ' + this.$v.userName.$params.minLength.min + ')';
         }
       },
-      passwordErrorMessage () {
+      passwordErrorMessage() {
         if (!this.$v.password.required) {
           return 'Hasło nie może być puste.'
-        }else if(!this.$v.password.minLength){
+        } else if (!this.$v.password.minLength) {
           return 'Hasło jest za krótkie. (Minimalna długość wynosi ' + this.$v.password.$params.minLength.min + ')';
-        }else if(!this.$v.password.passwordRegex){
+        } else if (!this.$v.password.passwordRegex) {
           return 'Hasło jest za łatwe. Powinno zawierać jedną małą literę, dużą literę, znak specjalny.';
         }
       },
-      confirmPasswordErrorMessage () {
+      confirmPasswordErrorMessage() {
         if (!this.$v.confirmPassword.required) {
           return 'Hasło nie może być puste'
-        }else if(!this.$v.confirmPassword.sameAsPassword){
+        } else if (!this.$v.confirmPassword.sameAsPassword) {
           return 'Podane hasła nie są identyczne';
         }
       },
-      emailAddressErrorMessage () {
+      emailAddressErrorMessage() {
         if (!this.$v.emailAddress.required) {
           return 'Email nie może być pusty.'
-        }else if(!this.$v.emailAddress.email){
+        } else if (!this.$v.emailAddress.email) {
           return 'Podany email jest niepoprawny.';
         }
       },
       termsErrorMessage() {
         if (!this.terms) {
           return 'Musisz zaakceptować regulamin.'
+        }
+      },
+      loginPasswordErrorMessage() {
+        if (!this.$v.loginPassword.required) {
+          return 'Hasło nie może być puste.'
+        } else if (!this.$v.loginPassword.minLength) {
+          return 'Hasło jest za krótkie. (Minimalna długość wynosi ' + this.$v.loginPassword.$params.minLength.min + ')';
+        } else if (!this.$v.loginPassword.passwordRegex) {
+          return 'Hasło musi zawierać zawierać jedną małą i dużą literę oraz znak specjalny.';
+        }
+      },
+      loginUserNameErrorMessage() {
+        if (!this.$v.loginUserName.required) {
+          return 'Login nie może być pusty.'
+        } else if (!this.$v.loginUserName.minLength) {
+          return 'Login jest za krótki. (Minimalna długość wynosi ' + this.$v.loginUserName.$params.minLength.min + ')';
         }
       }
     },
@@ -205,16 +233,22 @@
         appName: 'Flattery',
         active: null,
         status: 'not_accepted',
+        isAuthenticated:  false,
         registrationCompleted: false,
+        //registration fields
         firstName: '',
         lastName: '',
         userName: '',
         password: '',
         confirmPassword: '',
         emailAddress: '',
-        terms: false
+        terms: false,
+        //login fields
+        loginUserName: '',
+        loginPassword: ''
       }
-    }, methods: {
+    },
+    methods: {
       open: function (which, e) {
         e.preventDefault();
         if (this.active !== null) {
@@ -242,25 +276,41 @@
         }
         this.active = which;
       },
-      submit: function (which, e) {
-        let data = {form: which};
-        switch(which){
-          case 'login':
-            data.userName = this.userName;
-            data.password = this.password;
-            axios.post('/login', {
+      async onLogin() {
+        this.$v.loginGroup.$touch();
+        //if validated login process begins
+        if (!this.$v.loginGroup.$invalid) {
+          try {
+            await axios.post('http://127.0.0.1:8088/login', {
               userName: this.userName,
               password: this.password
             }).then(res => {
+              this.isAuthenticated = true;
+
+              this.closeLoginRegisterPopup();
               console.log(res);
-            }).catch(error => console.log(error.response));
+            });
+          } catch (e) {
+            console.log(e.message + '\nStatus: ' + e.status)
+          }
+        }
+      },
+      async checkIfAuthenticated(){
+        try {
+          await axios.get(`http://127.0.0.1:8088/loggedUserData`, {
+          }).then(result => {
+            console.log(result.data);
+            this.isAuthenticated = true;
+          })
+        } catch (e) {
+          this.isAuthenticated = false;
         }
       },
       async onRegister() {
         //validating fields
-        this.$v.$touch();
+        this.$v.registerGroup.$touch();
         //if validated registration begins
-        if (!this.$v.$invalid) {
+        if (!this.$v.registerGroup.$invalid) {
           try {
             await axios.post(`http://127.0.0.1:8088/register`, {
               firstName: this.firstName,
@@ -282,11 +332,15 @@
         document.getElementById("login-register").classList.remove("active");
         //inside setTimeout function "this" is referring to something else
         let self = this;
-        setTimeout(function() {
+        setTimeout(function () {
           self.firstName = self.lastName = self.userName = self.password = self.confirmPassword = self.emailAddress = '';
           self.registrationCompleted = false;
         }, 2000);
       }
+    },
+    // is called onPageLoad
+    mounted(){
+      this.checkIfAuthenticated();
     },
     validations: {
       firstName: {
@@ -309,7 +363,15 @@
       },
       terms: {
         required
-      }
+      },
+      loginUserName: {
+        required, minLength: minLength(4), maxLength: maxLength(20)
+      },
+      loginPassword: {
+        required, minLength: minLength(6), maxLength: maxLength(20), passwordRegex
+      },
+      loginGroup: ['loginUserName', 'loginPassword'],
+      registerGroup: ['firstName', 'lastName', 'userName', 'password', 'confirmPassword', 'emailAddress', 'terms']
     }
   }
 </script>

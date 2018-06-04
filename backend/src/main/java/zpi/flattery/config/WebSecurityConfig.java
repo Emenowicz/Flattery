@@ -6,6 +6,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.cors.CorsConfigurationSource;
 import zpi.flattery.security.LoginAuthenticationProvider;
 
 
@@ -18,12 +19,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/","/search", "/webjars/**", "/offers", "/css/**","/js/**","/login").permitAll()
-                .antMatchers("/public/**", "/resources/**","/resources/public/**").permitAll().antMatchers("/**").anonymous()
-                .anyRequest().authenticated()
+        http.authorizeRequests().antMatchers("/","/search", "/webjars/**", "/offers", "/css/**","/js/**","/login", "/register").permitAll()
+                .antMatchers("/public/**", "/resources/**","/resources/public/**").permitAll()
+                .antMatchers("/addFavourite").authenticated()
                 .and()
-                .csrf().disable()
-                .cors();
+                .cors()
+                .and()
+                .csrf().disable();
     }
 
     @Override

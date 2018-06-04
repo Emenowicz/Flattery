@@ -7,6 +7,7 @@ import zpi.flattery.models.enums.RoomType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -15,10 +16,11 @@ public class Offer {
 
     @Id
     @GeneratedValue
-    private int offerId;
+    @Column(name = "id")
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_IdU")
+    @JoinColumn(name = "Users_id")
     private User user;
 
     @NotNull
@@ -127,12 +129,12 @@ public class Offer {
         this.coordinates = coordinates;
     }
 
-    public int getOfferId() {
-        return offerId;
+    public Long getId() {
+        return id;
     }
 
-    public void setOfferId(int offerId) {
-        this.offerId = offerId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public User getUser() {
@@ -338,7 +340,7 @@ public class Offer {
     @Override
     public String toString() {
         return "Offer{" +
-                "offerId=" + offerId +
+                "id=" + id +
                 ", user=" + user +
                 ", title='" + title + '\'' +
                 ", region='" + region + '\'' +
@@ -347,12 +349,25 @@ public class Offer {
                 ", offerType=" + offerType +
                 ", roomType=" + roomType +
                 ", price=" + price +
-                ", publishingDate=" + publishingDate +
+                ", publishingDate='" + publishingDate + '\'' +
+                ", mainPhoto=" + Arrays.toString(mainPhoto) +
+                ", photos=" + photos +
+                ", description='" + description + '\'' +
                 ", numberOfRooms=" + numberOfRooms +
                 ", floor=" + floor +
                 ", buildingType=" + buildingType +
+                ", squareMetrage=" + squareMetrage +
+                ", femaleOnly=" + femaleOnly +
+                ", maleOnly=" + maleOnly +
+                ", isSmokingAllowed=" + isSmokingAllowed +
+                ", arePetsAllowed=" + arePetsAllowed +
+                ", hasBalcony=" + hasBalcony +
+                ", isFurnished=" + isFurnished +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", coordinates='" + coordinates + '\'' +
                 ", photoUrl='" + photoUrl + '\'' +
+                ", favoritedByUsers=" + favoritedByUsers +
+                ", reports=" + reports +
                 '}';
     }
 }

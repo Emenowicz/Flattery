@@ -4,7 +4,6 @@ import BootstrapVue from 'bootstrap-vue'
 import axios from 'axios'
 import Vuetify from 'vuetify'
 import Vuelidate from 'vuelidate'
-import MenuIcon from 'vue-material-design-icons/menu.vue'
 
 import router from './router/router'
 import 'bootstrap/dist/css/bootstrap.css'

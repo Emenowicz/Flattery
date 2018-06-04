@@ -15,7 +15,8 @@ public class User {
 
     @Id
     @GeneratedValue
-    private int userId;
+    @Column(name = "id")
+    private Long id;
 
     @NotNull
     @Size(min = 3, max = 30)
@@ -89,12 +90,12 @@ public class User {
     public User() {
     }
 
-    public int getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getLastName() {

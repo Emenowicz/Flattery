@@ -12,7 +12,13 @@
       return {
         isLoaded: false,
         searchInput: '',
-        fetchedOffers: []
+        fetchedOffers: [],
+        isAuthenticated: false
+      }
+    },
+    computed: {
+      checkForAuth() {
+        return this.$parent.isAuthenticated;
       }
     },
     methods: {
@@ -32,10 +38,27 @@
         } catch (e) {
           console.log(e.message)
         }
+      },
+      async addToFavourite(offer) {
+        try {
+          await axios.put(`http://127.0.0.1:8088/addFavourite`, {
+            offer: {
+              title: offer.title,
+              price: offer.price,
+              city: offer.city,
+              publishingDate: offer.publishingDate
+            }
+          }).then(result => {
+            console.log(result.status)
+          })
+        } catch (e) {
+          console.log(e.message)
+        }
       }
     },
     props: {
-      search: null
+      search: null,
+      auth: null
     },
     components: {
       ShareIcon, HeartOutlineIcon, HeartIcon
@@ -81,7 +104,7 @@
                         <b-button class="btn--flat btn--icon">
                           <ShareIcon/>
                         </b-button>
-                        <b-button class="btn--flat btn--icon">
+                        <b-button v-on:click="addToFavourite(offer)" class="btn--flat btn--icon" v-if="auth">
                           <HeartIcon/>
                         </b-button>
                       </div>

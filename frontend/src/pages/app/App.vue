@@ -22,7 +22,7 @@
               <b-nav-item class="mr4 navbar-link navbar-font">{{ user.userName }}</b-nav-item>
               <b-nav-item href="#" class="mr-4">
                 <p class="navbar-link navbar-font">
-                Wyloguj się</p></b-nav-item>
+                  Wyloguj się</p></b-nav-item>
             </b-navbar-nav>
           </b-collapse>
         </b-navbar>
@@ -149,9 +149,9 @@
 </template>
 
 <script>
-// @formatter:off
-/* eslint-disable */
-// @formatter:on
+  // @formatter:off
+  /* eslint-disable */
+  // @formatter:on
   import 'vuetify/dist/vuetify.min.css'
   import 'vue-material-design-icons/styles.css'
   import axios from 'axios'
@@ -298,13 +298,12 @@
         if (!this.$v.loginGroup.$invalid) {
           try {
             await axios.post('http://127.0.0.1:8088/login', {
-              userName: this.userName,
-              password: this.password
+              userName: this.loginUserName,
+              password: this.loginPassword
             }).then(result => {
-              this.isAuthenticated = true;
-              this.user = result.data;
+              this.checkIfAuthenticated();
               this.closeLoginRegisterPopup();
-              console.log(result.data);
+              console.log(result);
             });
           } catch (e) {
             console.log(e.message + '\nStatus: ' + e.status)

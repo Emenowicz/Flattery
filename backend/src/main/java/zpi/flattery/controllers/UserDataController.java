@@ -1,27 +1,30 @@
 package zpi.flattery.controllers;
 
-import io.reactivex.Observer;
 import javassist.NotFoundException;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import zpi.flattery.controllers.model.LocationRequest;
+import zpi.flattery.controllers.model.UserRequest;
 import zpi.flattery.models.User;
+import zpi.flattery.service.LoginService;
 import zpi.flattery.service.UserDataService;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Optional;
 
 @RestController
 public class UserDataController {
 
     @Resource
     UserDataService userDataService;
+
+    @Resource
+    LoginService loginService;
 
     @RequestMapping(value = "/loggedUserData", method = RequestMethod.GET)
     public ResponseEntity getUserData(Principal principal) {
@@ -48,5 +51,17 @@ public class UserDataController {
             result.setErrorResult("HTTP response is: " + HttpStatus.NOT_FOUND);
         }
         return result;
+    }
+
+    @RequestMapping(value = "/changeUserData", method = RequestMethod.POST)
+    public ResponseEntity changeUserData(@RequestBody UserRequest userRequest){
+            User oldUser = loginService.findUserById(userRequest.getUser().getId());
+        if(oldUser != null){
+            oldUser.setUser(userRequest.getUser());
+            loginService.saveOrUpdateUser(oldUser, userRequest.getPassword());
+            return new ResponseEntity(userRequest.getUser(), HttpStatus.OK);
+        }
+
+        return new ResponseEntity(HttpStatus.CONFLICT);
     }
 }

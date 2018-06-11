@@ -11,7 +11,6 @@ import zpi.flattery.models.User;
 import zpi.flattery.repository.UserDao;
 
 import javax.annotation.Resource;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.Optional;
 
 @Service
@@ -38,4 +37,18 @@ public class LoginService implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         return null;
     }
+
+    public User findUserById(long id) {
+        Optional<User> user = userDao.findUserById(id);
+        return user.orElse(null);
+    }
+
+    public void saveOrUpdateUser(User user, String password) {
+        if(password != null){
+            user.setPassword(passwordEncoder.encode(password));
+        }
+        userDao.save(user);
+    }
+
+
 }

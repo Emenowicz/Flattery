@@ -19,7 +19,7 @@
             </b-navbar-nav>
 
             <b-navbar-nav class="ml-auto" v-else>
-              <b-nav-item class="mr4 navbar-link navbar-font">{{ user.userName }}</b-nav-item>
+              <b-nav-item v-on:click="showUserAccount()" class="mr4 navbar-link navbar-font">{{ user.userName }}</b-nav-item>
               <b-nav-item href="#" class="mr-4">
                 <p class="navbar-link navbar-font">
                   Wyloguj się</p></b-nav-item>
@@ -31,6 +31,7 @@
         <router-view
           :auth="isAuthenticated"
           :location="location"
+          :user="user"
           v-on:setLocation="setGeoLocation"></router-view>
       </div>
       <div class="footer fixed-bottom">
@@ -292,10 +293,10 @@
       },
       async checkIfAuthenticated() {
         try {
-          await axios.get(`http://127.0.0.1:8088/loggedUserData`, {}).then(result => {
+          await axios.get('http://127.0.0.1:8088/loggedUserData', {}).then(result => {
             console.log(result.data);
             this.user = result.data;
-            this.location = this.user.location
+            this.location = this.user.location;
             this.isAuthenticated = true;
           })
         } catch (e) {
@@ -381,6 +382,9 @@
           }
         }
       },
+      async showUserAccount(){
+        this.$router.replace({path: '/account'});
+      }
     },
     // is called onPageLoad
     mounted() {

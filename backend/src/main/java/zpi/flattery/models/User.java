@@ -195,12 +195,4 @@ public class User {
     public void setLocation(String location) {
         this.location = location;
     }
-
-    public void setUser(User user){
-        if(user.getId() != null) {
-            firstName = user.firstName;
-            lastName = user.lastName;
-            emailAddress = user.emailAddress;
-        }
-    }
 }

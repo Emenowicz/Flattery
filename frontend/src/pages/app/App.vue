@@ -28,7 +28,10 @@
         </b-navbar>
       </div>
       <div class="text-center all main-section">
-        <router-view :auth="isAuthenticated"></router-view>
+        <router-view
+          :auth="isAuthenticated"
+          :location="location"
+          v-on:setLocation="setGeoLocation"></router-view>
       </div>
       <div class="footer fixed-bottom">
         <!-- As a heading -->
@@ -107,16 +110,22 @@
                   v-if="$v.registerGroup.$dirty && $v.emailAddress.$invalid"
                   class="alert alert-danger">{{ emailAddressErrorMessage }}</span>
               </b-form-group>
-
               <b-form-group>
-                <input type="checkbox" id="new-account-terms"
-                       v-model="terms"/>
-                Oświadczam, że zapoznałem się z Regulaminem portalu Flattery.pl i akceptuję jego treść.
+                <div class="row">
+                  <div class="col-sm-1">
+                    <v-checkbox
+                      id="new-account-terms"
+                      v-model="terms"
+                    ></v-checkbox>
+                  </div>
+                  <div class="col-sm-11">
+                    <span>Oświadczam, że zapoznałem się z Regulaminem portalu Flattery.pl i akceptuję jego treść.</span>
+                  </div>
+                </div>
                 <span
-                  v-if="$v.$dirty && $v.terms.$invalid"
+                  v-if="$v.registerGroup.$dirty && !terms"
                   class="alert alert-danger">{{ termsErrorMessage }}</span>
               </b-form-group>
-
               <b-button v-on:click="onRegister" type="submit" class="btn-block" variant="primary">Zarejestruj się
               </b-button>
             </b-form>
@@ -212,9 +221,7 @@
         }
       },
       termsErrorMessage() {
-        if (!this.terms) {
           return 'Musisz zaakceptować regulamin.'
-        }
       },
       loginPasswordErrorMessage() {
         if (!this.$v.loginPassword.required) {
@@ -238,6 +245,9 @@
         user: null,
         isAuthenticated: false,
         registrationCompleted: false,
+        positionLong: '',
+        positionLat: '',
+        location: '',
         //registration fields
         firstName: '',
         lastName: '',
@@ -285,6 +295,7 @@
           await axios.get(`http://127.0.0.1:8088/loggedUserData`, {}).then(result => {
             console.log(result.data);
             this.user = result.data;
+            this.location = this.user.location
             this.isAuthenticated = true;
           })
         } catch (e) {
@@ -315,7 +326,7 @@
         //validating fields
         this.$v.registerGroup.$touch();
         //if validated registration begins
-        if (!this.$v.registerGroup.$invalid) {
+        if (!this.$v.registerGroup.$invalid && this.terms) {
           try {
             await axios.post(`http://127.0.0.1:8088/register`, {
               firstName: this.firstName,
@@ -341,11 +352,40 @@
           self.firstName = self.lastName = self.userName = self.password = self.confirmPassword = self.emailAddress = '';
           self.registrationCompleted = false;
         }, 2000);
-      }
+      },
+      async setGeoLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(position => {
+            this.positionLat = position.coords.latitude;
+            this.positionLong = position.coords.longitude;
+            if (this.isAuthenticated)
+              this.updateUserLocation();
+          });
+        }
+      },
+      async updateUserLocation() {
+        let longDiff = Math.abs(this.user.latitude - this.positionLat);
+        let latDiff = Math.abs(this.user.longitude - this.positionLong);
+        if (longDiff > 0.1 || latDiff > 0.1) {
+          try {
+            await axios.put(`http://127.0.0.1:8088/saveUserLocation`, {
+              longitude: this.positionLong,
+              latitude: this.positionLat
+            }).then(result => {
+              this.location = this.user.location = result.data;
+              this.user.longitude = this.positionLong;
+              this.user.latitude = this.positionLat;
+            })
+          } catch (e) {
+            console.log(e.message);
+          }
+        }
+      },
     },
     // is called onPageLoad
     mounted() {
       this.checkIfAuthenticated();
+      // this.setGeoLocation();
     },
     validations: {
       firstName: {

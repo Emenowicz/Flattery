@@ -11,4 +11,8 @@ public interface GoogleGeocodeApi {
 
     @GET("/maps/api/geocode/json")
     Observable<GeocodeResponse> getGeocode(@Query("address") String address, @Query("key") String key);
+
+    @GET("/maps/api/geocode/json")
+    Observable<GeocodeResponse> getCity(@Query("latlng") String latlng, @Query("key") String key);
+
 }

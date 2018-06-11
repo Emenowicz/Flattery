@@ -54,11 +54,14 @@ public class User {
     @JsonIgnoreProperties({"user", "favouritedByUsers", "reports"})
     private List<Offer> favoriteOffers;
 
-    @Column(name = "Longitude")
+    @Column(name = "longitude")
     private double longitude;
 
-    @Column(name = "Latitude")
+    @Column(name = "latitude")
     private double latitude;
+
+    @Column(name = "location")
+    private String location;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnoreProperties({"user"})
@@ -183,5 +186,13 @@ public class User {
 
     public void setReports(List<ReportedOffer> reports) {
         this.reports = reports;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

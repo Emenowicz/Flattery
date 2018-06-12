@@ -23,8 +23,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/public/**", "/resources/**","/resources/public/**").permitAll()
                 .antMatchers("/addFavourite").authenticated()
                 .and()
-                .cors()
-                .and()
                 .csrf().disable();
     }
 

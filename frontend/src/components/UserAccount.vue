@@ -1,31 +1,29 @@
 <template>
-  <b-container class="mx-auto w-75">
-    <h1 class="display-3"></h1>
+  <b-container class="mx-auto w-75 main-container">
+    <h1 class="display-3">Edytuj swoje dane</h1>
     <div class="profile-container clearfix p-4">
-      <b-form>
-        <b-form-group horizontal :label-cols="2" label-for="userName" label="Imię">
-          <b-form-input id="userName" v-model="username" type="text" :placeholder="user.firstName"></b-form-input>
+      <b-form class="form-container">
+        <b-form-group horizontal :label-cols="2" label-for="userName" label="Imię" class="labels">
+          <b-form-input id="userName" v-model="username" type="text" :placeholder="user.firstName"
+                        size="lg"></b-form-input>
         </b-form-group>
-        <b-form-group horizontal :label-cols="2" label-for="userSurname" label="Nazwisko">
-          <b-form-input id="userSurname" v-model="userSurname" type="text" :placeholder="user.lastName"></b-form-input>
+        <b-form-group horizontal :label-cols="2" label-for="userSurname" label="Nazwisko" class="labels">
+          <b-form-input id="userSurname" v-model="userSurname" type="text" :placeholder="user.lastName"
+                        size="lg"></b-form-input>
         </b-form-group>
-        <b-form-group horizontal :label-cols="2" label-for="userPassword" label="Hasło">
-          <b-form-input id="userPassword" v-model="userPassword" type="password"></b-form-input>
+        <b-form-group horizontal :label-cols="2" label-for="userPassword" label="Hasło" class="labels">
+          <b-form-input id="userPassword" v-model="userPassword" type="password" size="lg"></b-form-input>
         </b-form-group>
-        <b-form-group horizontal :label-cols="2" label-for="userConfirmPassword" label="Powtórz hasło">
-          <b-form-input id="userConfirmPassword" v-model="userPasswordRepeat" type="password"></b-form-input>
+        <b-form-group horizontal :label-cols="2" label-for="userConfirmPassword" label="Powtórz hasło" class="labels">
+          <b-form-input id="userConfirmPassword" v-model="userPasswordRepeat" type="password" size="lg"></b-form-input>
         </b-form-group>
-        <b-form-group horizontal :label-cols="2" label-for="userEmail" label="E-mail">
+        <b-form-group horizontal :label-cols="2" label-for="userEmail" label="E-mail" class="labels">
           <b-form-input id="userEmail" v-model="userEmailAddress" type="email"
-                        :placeholder="user.emailAddress"></b-form-input>
+                        :placeholder="user.emailAddress" size="lg"></b-form-input>
         </b-form-group>
-        <b-form-group horizontal :label-cols="2" label-for="userTelephone" label="Numer telefonu">
-          <b-form-input id="number"></b-form-input>
-        </b-form-group>
-        <b-form-group horizontal :label-cols="2" label-for="userCity" label="Miasto">
-          <b-form-input id="userCity"></b-form-input>
-        </b-form-group>
-        <b-button variant="primary" class="float-right" v-on:click="changeUserData()">Zatwierdź</b-button>
+        <b-button variant="success" v-on:click="changeUserData()" size="md" class="confirm-btn" style="background-color: white;">
+          Zatwierdź
+        </b-button>
       </b-form>
     </div>
   </b-container>
@@ -112,8 +110,26 @@
 <style>
 
   .profile-container {
-    background-color: rgba(230, 247, 255, .9);
+    background-color: rgba(230, 247, 255, 0.97);
+    border-radius: 10px;
+    margin-top: 16px;
   }
 
+  .labels {
+    font-size: 18px;
+    text-align: left;
+    margin-left: 30px;
+  }
 
+  .confirm-btn:hover {
+    color: darkgreen;
+  }
+
+  .main-container {
+    margin-top: 0;
+  }
+
+  .form-container {
+    padding: 10px;
+  }
 </style>

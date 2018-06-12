@@ -46,7 +46,7 @@
         <div class="login-register-modal">
           <ul class="form-switcher">
             <li v-on:click.prevent="flip('login',$event)"><a id="login-form" href="#">Login</a></li>
-            <li v-on:click.prevent="flip('register',$event)"><a id="register-form" href="#">Register</a></li>
+            <li v-on:click.prevent="flip('register',$event)"><a id="register-form" href="#">Zarejestruj się</a></li>
           </ul>
           <div class="form-register" id="form-register">
             <!--Register confirmation if completed-->
@@ -59,11 +59,11 @@
                     </div>
                   </v-flex>
                   <v-flex xs5 class="register-complete-text">
-                    <div class="black--text h6">Registration successful!</div>
+                    <div class="black--text h6">Zarejestrowano pomyślnie!</div>
                   </v-flex>
                 </v-layout>
                 <v-layout row justify-center>
-                  <b-button class="btn btn-outline-secondary" v-on:click="closeLoginRegisterPopup">CLOSE</b-button>
+                  <b-button class="btn btn-outline-secondary" v-on:click="closeLoginRegisterPopup">ZAMKNIJ</b-button>
                 </v-layout>
               </v-container>
             </div>

@@ -23,7 +23,7 @@
     "vue-material-design-icons": "^1.5.1",
     "vue-router": "^3.0.1",
     "vuelidate": "^0.7.4",
-    "vuetify": "^1.0.18"
+    "vuetify": "^1.0.19"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

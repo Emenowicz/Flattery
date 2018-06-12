@@ -94,11 +94,11 @@
 
                     <v-card-actions>
                       <div>
-                        <b-button v-bind:href="offer.urlToOffer" target="_blank" class="btn--flat">Zobacz</b-button>
-                        <b-button class="btn--flat btn--icon">
+                        <b-button v-bind:href="offer.urlToOffer" target="_blank" class="btn--flat lookButton">Zobacz</b-button>
+                        <b-button class="btn--flat btn--icon lookButton">
                           <ShareIcon/>
                         </b-button>
-                        <b-button v-on:click="addToFavourite(offer)" class="btn--flat btn--icon" v-if="auth">
+                        <b-button v-on:click="addToFavourite(offer)" class="btn--flat btn--icon favButton" v-if="auth">
                           <HeartIcon/>
                         </b-button>
                       </div>
@@ -142,7 +142,6 @@
               <h3 class="loading-title">Wyszukiwanie ofert...</h3>
           </v-card>
       </ul>
-
   </div>
 </template>
 
@@ -174,5 +173,13 @@
 
   .loading-title {
     margin-top: 18px;
+  }
+
+  .lookButton:hover {
+    color: cornflowerblue;
+  }
+
+  .favButton:hover {
+    color: darkred;
   }
 </style>

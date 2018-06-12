@@ -1,12 +1,14 @@
 package zpi.flattery.webscrapper;
 
-
+import io.reactivex.Single;
+import zpi.flattery.models.Offer;
 import zpi.flattery.models.enums.OfferType;
 import zpi.flattery.models.enums.RoomType;
 import zpi.flattery.webscrapper.strategy.ScrapStrategy;
 
-import java.util.Observable;
-import java.util.Observer;
+import java.io.IOException;
+import java.util.List;
+
 
 public class OfferScrapper {
 
@@ -16,11 +18,11 @@ public class OfferScrapper {
         this.scrapStrategy = scrapStrategy;
     }
 
-    public void scrapOffers() {
-        scrapStrategy.scrap();
+    public Single<List<Offer>> scrapOffers() {
+        return scrapStrategy.scrap();
     }
 
-    public static OfferScrapperBuilder builder(ScrapStrategy scrapStrategy) {
+    public static OfferScrapperBuilder Builder(ScrapStrategy scrapStrategy) {
         return new OfferScrapperBuilder(scrapStrategy);
     }
 
@@ -47,11 +49,6 @@ public class OfferScrapper {
             }
             scrapStrategy.setScrapParameters(roomType, offerType, query, minPrice, maxPrice, place, radius, daysOld);
             return new OfferScrapper(scrapStrategy);
-        }
-
-        public OfferScrapperBuilder addObserver(Observer observer) {
-            ((Observable) scrapStrategy).addObserver(observer);
-            return this;
         }
 
         public OfferScrapperBuilder roomType(RoomType roomType) {

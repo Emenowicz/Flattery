@@ -41,7 +41,7 @@ public class UserDataController {
         if (principal == null)
             result.setErrorResult("HTTP response is: " + HttpStatus.NOT_FOUND);
         try {
-            userDataService.saveUserLocation(locationRequest.getLogitude(), locationRequest.getLatitude(), principal, result);
+            userDataService.saveUserLocation(locationRequest.getLongitude(), locationRequest.getLatitude(), principal, result);
         } catch (NotFoundException e) {
             result.setErrorResult("HTTP response is: " + HttpStatus.NOT_FOUND);
         }

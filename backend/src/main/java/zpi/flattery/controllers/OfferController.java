@@ -33,20 +33,8 @@ public class OfferController {
 
     @RequestMapping(value = "/offers", produces = "application/json", method = RequestMethod.POST)
     public DeferredResult<List<Offer>> searchForOffers(@RequestBody SearchRequest searchRequest){
-
         DeferredResult<List<Offer>> result = new DeferredResult<>();
-        Observer observer = (o, arg) -> result.setResult(((ScrapStrategy) o).getScrappedOffers());
-
-        OfferScrapper scrapStrategy = OfferScrapper.builder(new OlxStrategy())
-                .place(searchRequest.getCity())
-                .query(searchRequest.getQuery())
-                .minPrice(searchRequest.getMinPrice())
-                .maxPrice(searchRequest.getMaxPrice())
-                .roomType(searchRequest.getRoomType())
-                .offerType(searchRequest.getOfferType())
-                .addObserver(observer)
-                .build();
-        scrapStrategy.scrapOffers();
+        offerService.scrapOffers(searchRequest, result);
         return result;
     }
 

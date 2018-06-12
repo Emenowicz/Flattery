@@ -1,7 +1,9 @@
 package zpi.flattery.webscrapper.strategy;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.HttpUrl;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,6 +21,7 @@ import zpi.flattery.webscrapper.util.OlxConstants;
 import zpi.flattery.webscrapper.util.OlxUtil;
 
 import java.io.IOException;
+import java.text.Normalizer;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -33,61 +36,59 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
 
     private static final Logger LOGGER = Logger.getLogger(OlxStrategy.class.getName());
-    private static final String BASE_URL = "https://www.olx.pl/";
+    private static final String BASE_URL = "www.olx.pl";
 
     private String urlToScrap;
-
     private RoomType roomType;
     private OfferType offerType;
-
-    private List<Offer> resultOffers;
-
     private int daysOld;
 
     public OlxStrategy() {
     }
 
     @Override
-    public List<Offer> getScrappedOffers() {
-        return resultOffers;
-    }
-
-    @Override
-    public void setScrapParameters(RoomType roomType, OfferType offerType, String query, double minPrice, double maxPrice, String place, Integer radius, Integer daysOld) {
+    public void setScrapParameters(RoomType roomType, OfferType offerType, String query, double minPrice, double maxPrice, String location, Integer radius, Integer daysOld) {
 //      https://www.olx.pl/nieruchomosci/stancje-pokoje/wroclaw/q-balkon/?search%5Bfilter_float_price%3Afrom%5D=500&search%5Bfilter_float_price%3Ato%5D=700&search%5Bfilter_enum_roomsize%5D%5B0%5D=two&search%5Bdist%5D=75
         this.offerType = offerType;
         this.roomType = roomType;
+
         if (daysOld == null) {
             this.daysOld = 0;
         } else {
             this.daysOld = daysOld;
         }
-        urlToScrap = BASE_URL;
+        HttpUrl.Builder httpUrl = new HttpUrl.Builder()
+                .scheme("https")
+                .host(BASE_URL)
+                .addEncodedPathSegment("nieruchomosci");
 
-        switch (offerType) {
-            case Flat:
-                urlToScrap += "nieruchomosci/mieszkania/";
-                break;
-            case Room:
-                urlToScrap += "nieruchomosci/stancje-pokoje/";
-                break;
-            case House:
-                urlToScrap += "nieruchomosci/domy/";
-                break;
-            default:
-                urlToScrap += "nieruchomosci/";
-
-        }
-        if (place != null) {
-            place = place.replaceAll("\\s+", "-");
-            urlToScrap += "q-" + place;
-            if (query != null) {
-                query = query.replaceAll("\\s+", "-");
-                urlToScrap += "-" + query;
+        if (offerType != null) {
+            switch (offerType) {
+                case Flat:
+                    httpUrl.addEncodedPathSegment("mieszkania");
+                    break;
+                case Room:
+                    httpUrl.addEncodedPathSegment("stancje-pokoje");
+                    break;
+                case House:
+                    httpUrl.addEncodedPathSegment("domy");
+                    break;
             }
-            urlToScrap += "/";
         }
-        if (minPrice != 0 || maxPrice != 0 || radius != null) {
+        if (location != null) {
+            location = Normalizer.normalize(location, Normalizer.Form.NFD);
+            location = location.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+            //'ł' is still not transformed to 'l'
+            location = location.replaceAll("ł", "l");
+            location = location.replaceAll("Ł", "L");
+            httpUrl.addEncodedPathSegment(location);
+        }
+        if (query != null) {
+            httpUrl.addEncodedPathSegment("q-" + query.replaceAll("\\s+", "-"));
+        }
+        urlToScrap = httpUrl.build().toString() + "/";
+
+        if (minPrice != 0 || maxPrice != 0 || radius != null || roomType != null) {
             boolean isAnyParamAdded = false;
             urlToScrap += "?";
             if (minPrice != 0) {
@@ -108,7 +109,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
                     isAnyParamAdded = true;
                 urlToScrap += "search%5Bdist%5D=" + radius;
             }
-            if (roomType != null && offerType == OfferType.Room) {
+            if (offerType == OfferType.Room && roomType != null) {
                 if (isAnyParamAdded)
                     urlToScrap += "&";
                 else
@@ -131,7 +132,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
     }
 
     @Override
-    public void scrap() {
+    public Single<List<Offer>> scrap() {
         ArrayList<Offer> scrappedOffers = new ArrayList<>();
         int currentPage = 1;
         //Scrapping offers
@@ -161,7 +162,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
 
         //Using google maps api to obtain coordinates from scrapped offer and update them.
         //When method is finished, subscribed observers are notified
-        addGeocodesAndNotify(scrappedOffers);
+        return addLatLang(scrappedOffers);
     }
 
     private boolean isOfferBeforeSearchingDate(Offer offer) {
@@ -190,7 +191,6 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
         }
 
         if (isOfferFromCorrectCategory(offerElement)) {
-
             //going to the deeper level in linkElement to extract imgUrl, there is a possibility for null photo in a offer
             Element imgUrlElement = linkElement.select("img").first();
             if (imgUrlElement != null)
@@ -207,6 +207,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
             String priceString = strongElements.last().text();
             priceString = priceString.substring(0, priceString.length() - 2);
             priceString = priceString.replaceAll("\\s+", "");
+            priceString = priceString.replaceAll(",", ".");
             price = Double.parseDouble(priceString);
 
             //Extracting date
@@ -239,7 +240,7 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
         }
     }
 
-    private void addGeocodesAndNotify(ArrayList<Offer> scrappedOffers) {
+    private Single<List<Offer>> addLatLang(ArrayList<Offer> scrappedOffers) {
         //Creating Retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(GoogleGeocodeApi.BASE_URL)
@@ -255,13 +256,11 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
                     .map(response -> combineResponseWithOffer(offer, response)));
         }
         //Observables from list are observed on the same thread so the whole process will wait for all of them to being processed, before completion
-        Observable.fromIterable(observableList)
+        return Observable.fromIterable(observableList)
                 .flatMap(task -> {
                     task.observeOn(Schedulers.computation());
                     return task;
-                })
-                .toList()
-                .subscribe(this::handleRespond, this::handleError);
+                }).toList();
     }
 
     private Offer combineResponseWithOffer(Offer offer, GeocodeResponse geocodeResponse) {
@@ -269,15 +268,5 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
             offer.setCoordinates("lat=" + geocodeResponse.results[0].geometry.location.lat + ", lng=" + geocodeResponse.results[0].geometry.location.lng);
         }
         return offer;
-    }
-
-    private void handleRespond(List<Offer> offerList) {
-        resultOffers = offerList;
-        setChanged();
-        notifyObservers();
-    }
-
-    private void handleError(Throwable e) {
-        e.printStackTrace();
     }
 }

@@ -23,11 +23,10 @@
       async searchOffers() {
         try {
           await axios.post(`http://127.0.0.1:8088/offers`, {
-            city: this.search,
-            offerType: 'Room',
-            roomType: 'SinglePerson',
-            minPrice: '700',
-            maxPrice: '2000'
+            query: this.search,
+            offerType: 'Flat',
+            roomType: "SinglePerson",
+            minPrice: '700'
           }).then(result => {
             console.log(result.data);
             this.fetchedOffers = result.data;

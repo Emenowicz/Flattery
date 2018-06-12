@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Offers")
@@ -369,5 +370,18 @@ public class Offer {
                 ", favoritedByUsers=" + favoritedByUsers +
                 ", reports=" + reports +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Offer offer = (Offer) o;
+        return Objects.equals(urlToOffer, offer.urlToOffer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(urlToOffer);
     }
 }

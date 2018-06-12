@@ -11,7 +11,6 @@ import zpi.flattery.models.User;
 import zpi.flattery.repository.UserDao;
 
 import javax.annotation.Resource;
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.Optional;
 
 @Service

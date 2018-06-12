@@ -2,6 +2,7 @@ package zpi.flattery.service;
 
 import io.reactivex.schedulers.Schedulers;
 import javassist.NotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.async.DeferredResult;
 import retrofit2.Retrofit;
@@ -23,6 +24,9 @@ public class UserDataService {
     @Resource
     UserDao userDao;
 
+    @Resource
+    PasswordEncoder passwordEncoder;
+
     public User getDataForLoggedUser(Principal principal) throws NotFoundException {
 
         Optional<User> user = userDao.findByUserName(principal.getName());
@@ -31,6 +35,17 @@ public class UserDataService {
         }
 
         return user.get();
+    }
+
+    public Optional<User> findUserById(long id) {
+        return userDao.findUserById(id);
+    }
+
+    public void saveOrUpdateUser(User user, String password) {
+        if(password != null){
+            user.setPassword(passwordEncoder.encode(password));
+        }
+        userDao.save(user);
     }
 
     public void saveUserLocation(Double longitude, Double latitude, Principal principal, DeferredResult<String> result) throws NotFoundException {

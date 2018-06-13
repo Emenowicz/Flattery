@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <v-app id="inspire">
-
       <div class="header fixed-top">
         <b-navbar toggleable="md" type="light" variant="light">
           <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
@@ -19,7 +18,8 @@
             </b-navbar-nav>
 
             <b-navbar-nav class="ml-auto" v-else>
-              <b-nav-item v-on:click="showUserAccount()" class="mr4 navbar-link navbar-font">{{ user.userName }}</b-nav-item>
+              <b-nav-item v-on:click="showUserAccount()" class="mr4 navbar-link navbar-font">{{ user.userName }}
+              </b-nav-item>
               <b-nav-item href="#" class="mr-4">
                 <p class="navbar-link navbar-font">
                   Wyloguj się</p></b-nav-item>
@@ -222,7 +222,7 @@
         }
       },
       termsErrorMessage() {
-          return 'Musisz zaakceptować regulamin.'
+        return 'Musisz zaakceptować regulamin.'
       },
       loginPasswordErrorMessage() {
         if (!this.$v.loginPassword.required) {
@@ -382,7 +382,7 @@
           }
         }
       },
-      async showUserAccount(){
+      async showUserAccount() {
         this.$router.replace({path: '/account'});
       }
     },

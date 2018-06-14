@@ -110,7 +110,7 @@
 <style>
 
   .profile-container {
-    background-color: rgba(230, 247, 255, 0.97);
+    background-color: rgba(230, 247, 255, .7);
     border-radius: 10px;
     margin-top: 16px;
   }

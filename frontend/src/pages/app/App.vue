@@ -18,8 +18,12 @@
             </b-navbar-nav>
 
             <b-navbar-nav class="ml-auto" v-else>
-              <b-nav-item v-on:click="showUserAccount()" class="mr4 navbar-link navbar-font">{{ user.userName }}
-              </b-nav-item>
+              <b-nav-item-dropdown class="mr4 navbar-font navbar-link" :text="user.userName">
+                <b-dropdown-item v-on:click="showUserAccount()" class="dropdown-item-padding" extra-toggle-classes="nav-link-custom" right>Edytuj profil
+                </b-dropdown-item>
+                <b-dropdown-item v-on:click="showFavOffers()" class="dropdown-item-padding">Ulubione oferty
+                </b-dropdown-item>
+              </b-nav-item-dropdown>
               <b-nav-item href="#" class="mr-4" v-on:click="logout">
                 <p class="navbar-link navbar-font">
                   Wyloguj się</p></b-nav-item>
@@ -387,6 +391,9 @@
       async showUserAccount() {
         this.$router.replace({path: '/account'});
       },
+      async showFavOffers() {
+        this.$router.replace({path: '/favourites'});
+      },
       async logout() {
         alert();
         try {
@@ -394,7 +401,7 @@
               this.isAuthenticated = !this.isAuthenticated;
               this.loginPassword = '';
               this.loginUserName = '';
-              if(this.currentPathMustBeAuthenticated()) {
+              if (this.currentPathMustBeAuthenticated()) {
                 this.$router.replace({path: '/'});
               }
             }
@@ -403,7 +410,7 @@
           console.log(e.message);
         }
       },
-      currentPathMustBeAuthenticated(){
+      currentPathMustBeAuthenticated() {
         // Authenticated paths must be added here!
         return this.$router.currentRoute.path === "/account";
 
@@ -453,4 +460,8 @@
   @import '../../../static/css/home.css';
   @import '../../../static/css/website.css';
   @import '../../../static/css/header.css';
+
+  .dropdown-item-padding{
+    padding: 5px;
+  }
 </style>

@@ -11,6 +11,8 @@ public class SearchRequest {
     private double maxPrice;
     private RoomType roomType;
     private OfferType offerType;
+    private int offerDaysOld;
+    private int radiusFromLocation;
 
 
     public RoomType getRoomType() {
@@ -59,5 +61,21 @@ public class SearchRequest {
 
     public void setMaxPrice(double maxPrice) {
         this.maxPrice = maxPrice;
+    }
+
+    public int getOfferDaysOld() {
+        return offerDaysOld;
+    }
+
+    public void setOfferDaysOld(int offerDaysOld) {
+        this.offerDaysOld = offerDaysOld;
+    }
+
+    public int getRadiusFromLocation() {
+        return radiusFromLocation;
+    }
+
+    public void setRadiusFromLocation(int radiusFromLocation) {
+        this.radiusFromLocation = radiusFromLocation;
     }
 }

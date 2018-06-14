@@ -13,6 +13,40 @@
         isLoaded: false,
         searchInput: '',
         fetchedOffers: [],
+        minPrice: '',
+        maxPrice: '',
+        daysSinceToday: '',
+        chosenDate: '',
+        radiusFromLocation: '',
+        houseTypeDropdownSelection: 'Flat',
+        roomTypeDropdownSelection: 'SinglePerson',
+        roomDropdownDisable: true,
+        roomTypes: [
+          {
+            value: "SinglePerson",
+            text: "Jednoosobowy"
+          },
+          {
+            value: "TwoPeople",
+            text: "Dwuosobowy"
+          },
+          {
+            value: "ThreeOrMorePeople",
+            text: "Trzyosobowy lub więcej"
+          }
+        ],
+        houseTypes: [
+          {
+            value: "Flat",
+            text: "Mieszkanie"
+          },
+          {
+            value: "Room",
+            text: "Pokój"
+          }, {
+            value: "House",
+            text: "Dom"
+          }]
       }
     },
     props: {
@@ -24,13 +58,18 @@
         try {
           await axios.post(`http://127.0.0.1:8088/offers`, {
             query: this.search,
-            offerType: 'Room',
-            roomType: "SinglePerson",
-            minPrice: '700'
+            offerType: this.houseTypeDropdownSelection,
+            roomType: this.roomTypeDropdownSelection,
+            minPrice: this.minPrice,
+            maxPrice: this.maxPrice,
+            offerDaysOld: this.offerDaysOld,
+            radiusFromLocation: this.radiusFromLocation
           }).then(result => {
             console.log(result.data);
             this.fetchedOffers = result.data;
-            this.isLoaded = true
+            this.isLoaded = true;
+            document.getElementById("filter-container").hidden = false;
+
           })
         } catch (e) {
           console.log(e.message)
@@ -52,17 +91,40 @@
           console.log(e.message)
         }
       },
-      hideDiv: function(){
+      hideDiv: function () {
         let filterMenu = document.getElementById("filter-menu");
-        if(filterMenu.classList.contains('hide')){
+        if (filterMenu.classList.contains('hide')) {
           filterMenu.classList.remove('hide');
-          document.getElementById("filter-button").textContent = "Zamknij Filtry";
-
         } else {
           filterMenu.classList.add('hide');
           document.getElementById("filter-button").textContent = "Pokaż Filtry";
         }
       },
+      setHouseType(arg) {
+        this.houseTypeDropdownSelection = arg;
+        this.roomDropdownDisable = arg !== 'Room';
+        if (this.roomDropdownDisable === true) {
+          this.roomTypeDropdownSelection = '';
+        }
+      },
+      setOfferDaysOld() {
+        let currentDate = new Date();
+        let chosenDate = new Date(this.chosenDate);
+        let timeDifference = Math.abs(currentDate.getTime() - chosenDate.getTime());
+        this.daysSinceToday = Math.ceil(timeDifference / (1000 * 3600 * 24));
+      },
+      setRoomType(arg) {
+        this.roomTypeDropdownSelection = arg;
+      },
+      checkFiltersAndSubmit() {
+        this.searchInput = this.search;
+        if (this.searchInput === '') {
+          document.getElementById("errorParagraph").hidden = false;
+        } else {
+          this.searchOffers();
+          document.getElementById("errorParagraph").hidden = true;
+        }
+      }
     },
     components: {
       ShareIcon, HeartOutlineIcon, HeartIcon
@@ -74,30 +136,36 @@
 </script>
 <template>
   <div class="container" id="container">
-    <div class="f-container clearfix">
+    <div id="filter-container" class="f-container clearfix" hidden>
       <b-button id="filter-button" class="float-right" v-on:click="hideDiv">Pokaż Filtry</b-button>
       <div id="filter-menu" class="filter-menu hide">
         <b-row class="justify-content-md-center">
           <b-col col lg="2">
-            <b-dropdown class="mx-1 type" right text="Typ">
-              <b-dropdown-item>Pokój</b-dropdown-item>
-              <b-dropdown-item>Mieszkanie</b-dropdown-item>
+            <b-dropdown id="home-type" class="mx-1 type" right text="Czego szukasz?" v-b-tooltip.hover
+                        title="Domyślnie: Mieszkanie">
+              <b-dropdown-item disabled value="0">Czego szukasz?</b-dropdown-item>
+              <b-dropdown-item v-for="houseType in houseTypes" :value="houseType.text"
+                               v-model="houseTypeDropdownSelection"
+                               v-on:click="setHouseType(houseType.value)"> {{ houseType.text }}
+              </b-dropdown-item>
             </b-dropdown>
           </b-col>
           <b-col col lg="3">
-            <b-dropdown class="mx-1 number-people" right text="Liczba osób">
-              <b-dropdown-item>Jednoosobowy</b-dropdown-item>
-              <b-dropdown-item>Dwuosobowy</b-dropdown-item>
-              <b-dropdown-item>Trzyosobowy</b-dropdown-item>
+            <b-dropdown id="room-type" class="mx-1 number-people" right text="Liczba osób"
+                        v-bind:disabled="roomDropdownDisable" v-b-tooltip.hover title="Domyślnie: Jednoosobowe">
+              <b-dropdown-item disabled value="0">Ile osób?</b-dropdown-item>
+              <b-dropdown-item v-for="roomType in roomTypes" v-model="roomTypeDropdownSelection"
+                               v-on:click="setRoomType(roomType.value)">{{roomType.text}}
+              </b-dropdown-item>
             </b-dropdown>
           </b-col>
           <b-col col lg="4">
             <b-form>
               <b-form-group label="Cena od" class="price" horizontal>
-                <b-input id="pricefrom" placeholder="1000 zł"/>
+                <b-input v-model="minPrice" id="pricefrom" placeholder="1000 zł"></b-input>
               </b-form-group>
               <b-form-group label="Cena do" class="price" horizontal>
-                <b-input id="priceto" placeholder="2000 zł"/>
+                <b-input v-model="maxPrice" id="priceto" placeholder="2000 zł"></b-input>
               </b-form-group>
             </b-form>
           </b-col>
@@ -106,24 +174,26 @@
         <b-row class="sec-row">
           <b-form inline>
             <b-form-group id="citySearch" label-size="lg" horizontal label="Miasto" label-for="cityInput">
-              <b-form-input v-model="searchInput" id="cityInput" type="text" size="lg" placeholder="Wpisz miasto"
+              <b-form-input v-model="search" id="cityInput" type="text" size="lg" placeholder="Wpisz miasto"
                             required>
               </b-form-input>
             </b-form-group>
             <b-col col sm="1">
               <b-form-group class="distance">
-                <b-input id="distance" size="lg" placeholder="1 km"/>
+                <b-input v-model="radiusFromLocation" id="distance" size="lg" placeholder="1 km"
+                         v-on:click="alert(radiusFromLocation)"></b-input>
               </b-form-group>
             </b-col>
           </b-form>
           <b-form-group class="date" label="Od" label-size="lg" horizontal>
-            <b-input id="date" type="date" size="lg"/>
+            <b-input id="date" v-model="chosenDate" v-on:change="setOfferDaysOld" type="date" size="lg"></b-input>
           </b-form-group>
         </b-row>
 
         <div style="text-align: right;">
-          <b-button class="search-button" variant="success">Szukaj</b-button>
+          <b-button class="search-button" variant="success" v-on:click="checkFiltersAndSubmit">Szukaj</b-button>
         </div>
+        <p id="errorParagraph" class="redtext" hidden>Proszę wpisz miasto!</p>
       </div>
     </div>
 
@@ -248,11 +318,12 @@
   }
 
   .f-container {
-    background-color: lightgrey;
+    /*background-color: lightgrey;*/
     /*opacity: 0.9;*/
     padding: 40px;
     margin-bottom: 30px;
     border-radius: 10px;
+    background-color: rgba(230, 247, 255, .7);
   }
 
   .price {
@@ -271,12 +342,16 @@
     display: block;
   }
 
-  .filter-menu.hide{
+  .filter-menu.hide {
     display: none;
   }
 
   .search-button:hover {
-   color: darkgreen;
+    color: darkgreen;
+  }
+
+  .redtext {
+    color: red;
   }
 
 </style>

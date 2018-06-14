@@ -388,17 +388,26 @@
         this.$router.replace({path: '/account'});
       },
       async logout() {
+        alert();
         try {
           await axios.get('http://127.0.0.1:8088/out').then(() => {
               this.isAuthenticated = !this.isAuthenticated;
               this.loginPassword = '';
               this.loginUserName = '';
-              this.$router.replace({path: '/'});
+              if(this.currentPathMustBeAuthenticated()) {
+                this.$router.replace({path: '/'});
+              }
             }
           ).catch(e => alert(e));
         } catch (e) {
           console.log(e.message);
         }
+      },
+      currentPathMustBeAuthenticated(){
+        // Authenticated paths must be added here!
+        return this.$router.currentRoute.path === "/account";
+
+
       }
     },
     // is called onPageLoad

@@ -48,7 +48,7 @@
             text: "Dom"
           }],
         radiusTypes: [
-          '0','2','5','10','15','30','50','75','100'
+          '0', '2', '5', '10', '15', '30', '50', '75', '100'
         ]
       }
     },
@@ -136,6 +136,11 @@
     components: {
       ShareIcon, HeartOutlineIcon, HeartIcon
     },
+    computed: {
+      isListViewEmpty: function() {
+        return this.fetchedOffers.length === 0;
+      }
+    },
     created: function () {
       this.searchOffers()
     }
@@ -143,7 +148,7 @@
 </script>
 <template>
   <div class="container" id="container">
-    <div id="filter-container" class="f-container clearfix" hidden>
+    <div id="filter-container" class="f-container container-radius clearfix" hidden>
       <b-button id="filter-button" class="float-right" v-on:click="hideDiv">Pokaż Filtry</b-button>
       <div id="filter-menu" class="filter-menu hide">
         <b-row class="justify-content-md-center">
@@ -187,9 +192,10 @@
             </b-form-group>
             <b-col col sm="1">
               <b-dropdown id="radius-type" class="mx-1" right text="Odległość"
-                         v-b-tooltip.hover title="Domyślnie: 5 km">
+                          v-b-tooltip.hover title="Domyślnie: 5 km">
                 <b-dropdown-item disabled value="0">Wybierz promień?</b-dropdown-item>
-                <b-dropdown-item v-for="radiusType in radiusTypes" v-on:click="setRadiusType(radiusType)">{{ radiusType }} km
+                <b-dropdown-item v-for="radiusType in radiusTypes" v-on:click="setRadiusType(radiusType)">{{ radiusType
+                  }} km
                 </b-dropdown-item>
               </b-dropdown>
             </b-col>
@@ -207,64 +213,73 @@
     </div>
 
     <ul id="listview" v-if="isLoaded">
-      <li class="card" v-for="offer in fetchedOffers">
-        <v-flex xs12>
-          <v-card
-            color="white"
-            class="black--text">
-            <v-container fluid grid-list-lg>
-              <v-layout row>
-                <v-flex xs3>
-                  <v-card-media
-                    v-bind:src="offer.photoUrl"
-                    height="150px"
-                    width="150px"
-                    contain
-                    class="card-image"
-                  ></v-card-media>
-                </v-flex>
-                <v-flex xs7>
-                  <v-card-title primary-title>
-                    <div class="card-text">
-                      <div v-text="offer.title" class="title"></div>
-                      <div v-text="offer.city" class="grey--text"></div>
-                    </div>
-
-                  </v-card-title>
-
-                  <v-card-actions>
-                    <div>
-                      <b-button v-bind:href="offer.urlToOffer" target="_blank" class="btn--flat lookButton">Zobacz
-                      </b-button>
-                      <b-button class="btn--flat btn--icon lookButton">
-                        <ShareIcon/>
-                      </b-button>
-                      <b-button v-on:click="addToFavourite(offer)" class="btn--flat btn--icon favButton" v-if="auth">
-                        <HeartIcon/>
-                      </b-button>
-                    </div>
-                  </v-card-actions>
-                </v-flex>
-                <v-flex xs2>
-                  <v-layout fill-height column justify-space-between>
+      <div v-if="!isListViewEmpty">
+        <li class="card" v-for="offer in fetchedOffers">
+          <v-flex xs12>
+            <v-card
+              color="white"
+              class="black--text">
+              <v-container fluid grid-list-lg>
+                <v-layout row>
+                  <v-flex xs3>
+                    <v-card-media
+                      v-bind:src="offer.photoUrl"
+                      height="150px"
+                      width="150px"
+                      contain
+                      class="card-image"
+                    ></v-card-media>
+                  </v-flex>
+                  <v-flex xs7>
                     <v-card-title primary-title>
-                      <v-flex>
-                        <div v-text="offer.price + ' zł'" class="text--primary title" style="font-weight: 500;"></div>
-                      </v-flex>
-                    </v-card-title>
-                    <v-spacer></v-spacer>
-                    <v-flex>
-                      <div style="text-align: center" v-text="offer.publishingDate" class="text--primary subheading">
-                        25.05.2018 10:00
+                      <div class="card-text">
+                        <div v-text="offer.title" class="title"></div>
+                        <div v-text="offer.city" class="grey--text"></div>
                       </div>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </v-card>
-        </v-flex>
-      </li>
+
+                    </v-card-title>
+
+                    <v-card-actions>
+                      <div>
+                        <b-button v-bind:href="offer.urlToOffer" target="_blank" class="btn--flat lookButton">Zobacz
+                        </b-button>
+                        <b-button class="btn--flat btn--icon lookButton">
+                          <ShareIcon/>
+                        </b-button>
+                        <b-button v-on:click="addToFavourite(offer)" class="btn--flat btn--icon favButton" v-if="auth">
+                          <HeartIcon/>
+                        </b-button>
+                      </div>
+                    </v-card-actions>
+                  </v-flex>
+                  <v-flex xs2>
+                    <v-layout fill-height column justify-space-between>
+                      <v-card-title primary-title>
+                        <v-flex>
+                          <div v-text="offer.price + ' zł'" class="text--primary title" style="font-weight: 500;"></div>
+                        </v-flex>
+                      </v-card-title>
+                      <v-spacer></v-spacer>
+                      <v-flex>
+                        <div style="text-align: center" v-text="offer.publishingDate" class="text--primary subheading">
+                        </div>
+                      </v-flex>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-card>
+          </v-flex>
+        </li>
+      </div>
+      <div v-else>
+        <v-card
+          class="container-radius"
+          raised
+          light>
+          <h3 class="loading-title display-1 redtext">Niestety nie znaleźliśmy ofert spełniających warunki filtrów szukających. Proszę spróbuj ponownie!</h3>
+        </v-card>
+      </div>
     </ul>
     <ul class="loading-circle" v-else>
       <v-card
@@ -331,8 +346,11 @@
     /*opacity: 0.9;*/
     padding: 40px;
     margin-bottom: 30px;
-    border-radius: 10px;
     background-color: rgba(230, 247, 255, .7);
+  }
+
+  .container-radius {
+    border-radius: 10px;
   }
 
   .price {
@@ -362,5 +380,4 @@
   .redtext {
     color: red;
   }
-
 </style>

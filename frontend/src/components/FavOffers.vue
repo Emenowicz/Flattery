@@ -1,5 +1,5 @@
 <template>
-  <b-container class="margin-fix">
+  <b-container class="margin-fix" v-if="redirectIfNotAuth">
     <ul id="listview">
       <li class="card">
         <v-flex xs12>
@@ -71,8 +71,19 @@
 
   export default {
     name: "FavOffers",
+    props: {
+      user: null
+    },
     components: {
       ShareIcon, HeartOutlineIcon, HeartIcon
+    }, computed: {
+      redirectIfNotAuth: function(){
+        if(this.user === null){
+          this.$router.replace("/");
+          return false;
+        }
+        return true;
+      }
     }
   }
 </script>

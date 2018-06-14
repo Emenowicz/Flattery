@@ -92,7 +92,8 @@
               </b-form-group>
 
               <b-form-group>
-                <b-form-input id="new-account-password" placeholder="Hasło" v-model="password" type="password"></b-form-input>
+                <b-form-input id="new-account-password" placeholder="Hasło" v-model="password"
+                              type="password"></b-form-input>
                 <span
                   v-if="$v.registerGroup.$dirty && $v.password.$invalid"
                   class="alert alert-danger">{{ passwordErrorMessage }}</span>
@@ -386,14 +387,16 @@
       async showUserAccount() {
         this.$router.replace({path: '/account'});
       },
-      async logout(){
-        try{
-          await axios.get('http://127.0.0.1:8088/out').then(() =>
-            {
+      async logout() {
+        try {
+          await axios.get('http://127.0.0.1:8088/out').then(() => {
               this.isAuthenticated = !this.isAuthenticated;
+              this.loginPassword = '';
+              this.loginUserName = '';
+              this.$router.replace({path: '/'});
             }
-          )
-        } catch(e) {
+          ).catch(e => alert(e));
+        } catch (e) {
           console.log(e.message);
         }
       }

@@ -20,7 +20,7 @@
             <b-navbar-nav class="ml-auto" v-else>
               <b-nav-item v-on:click="showUserAccount()" class="mr4 navbar-link navbar-font">{{ user.userName }}
               </b-nav-item>
-              <b-nav-item href="#" class="mr-4">
+              <b-nav-item href="#" class="mr-4" v-on:click="logout">
                 <p class="navbar-link navbar-font">
                   Wyloguj się</p></b-nav-item>
             </b-navbar-nav>
@@ -85,14 +85,15 @@
               </b-form-group>
 
               <b-form-group>
-                <b-form-input id="new-account-login" placeholder="Login" v-model="userName"/>
+                <b-form-input id="new-account-login" placeholder="Login" v-model="userName"></b-form-input>
                 <span
                   v-if="$v.registerGroup.$dirty && $v.userName.$invalid"
                   class="alert alert-danger">{{ userNameErrorMessage }}</span>
               </b-form-group>
 
               <b-form-group>
-                <b-form-input id="new-account-password" placeholder="Hasło" v-model="password" type="password"/>
+                <b-form-input id="new-account-password" placeholder="Hasło" v-model="password"
+                              type="password"></b-form-input>
                 <span
                   v-if="$v.registerGroup.$dirty && $v.password.$invalid"
                   class="alert alert-danger">{{ passwordErrorMessage }}</span>
@@ -100,14 +101,14 @@
 
               <b-form-group>
                 <b-form-input id="new-account-password-two" placeholder="Powtórz Hasło" v-model="confirmPassword"
-                              type="password"/>
+                              type="password"></b-form-input>
                 <span
                   v-if="$v.registerGroup.$dirty && $v.confirmPassword.$invalid"
                   class="alert alert-danger">{{ confirmPasswordErrorMessage }}</span>
               </b-form-group>
 
               <b-form-group>
-                <b-form-input id="new-account-email" placeholder="Email" v-model="emailAddress"/>
+                <b-form-input id="new-account-email" placeholder="Email" v-model="emailAddress"></b-form-input>
                 <span
                   v-if="$v.registerGroup.$dirty && $v.emailAddress.$invalid"
                   class="alert alert-danger">{{ emailAddressErrorMessage }}</span>
@@ -385,6 +386,28 @@
       },
       async showUserAccount() {
         this.$router.replace({path: '/account'});
+      },
+      async logout() {
+        alert();
+        try {
+          await axios.get('http://127.0.0.1:8088/out').then(() => {
+              this.isAuthenticated = !this.isAuthenticated;
+              this.loginPassword = '';
+              this.loginUserName = '';
+              if(this.currentPathMustBeAuthenticated()) {
+                this.$router.replace({path: '/'});
+              }
+            }
+          ).catch(e => alert(e));
+        } catch (e) {
+          console.log(e.message);
+        }
+      },
+      currentPathMustBeAuthenticated(){
+        // Authenticated paths must be added here!
+        return this.$router.currentRoute.path === "/account";
+
+
       }
     },
     // is called onPageLoad

@@ -33,6 +33,8 @@ public class OfferService {
                 .maxPrice(searchRequest.getMaxPrice())
                 .roomType(searchRequest.getRoomType())
                 .offerType(searchRequest.getOfferType())
+                .maxDaysOld(searchRequest.getOfferDaysOld())
+                .radius(searchRequest.getRadiusFromLocation())
                 .build();
 
         scrapper.scrapOffers()

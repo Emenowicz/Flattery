@@ -32,6 +32,7 @@
           :auth="isAuthenticated"
           :location="location"
           :user="user"
+          :searchInput="search"
           v-on:setLocation="setGeoLocation"></router-view>
       </div>
       <div class="footer fixed-bottom">
@@ -70,14 +71,14 @@
             <!--Register form if registration is not completed yet-->
             <b-form v-else>
               <b-form-group>
-                <b-form-input id="new-account-name" placeholder="Imię" v-model="firstName"/>
+                <b-form-input id="new-account-name" placeholder="Imię" v-model="firstName"></b-form-input>
                 <span
                   v-if="$v.registerGroup.$dirty && $v.firstName.$invalid"
                   class="alert alert-danger">{{ firstNameErrorMessage }}</span>
               </b-form-group>
 
               <b-form-group>
-                <b-form-input id="new-account-surname" placeholder="Nazwisko" v-model="lastName"/>
+                <b-form-input id="new-account-surname" placeholder="Nazwisko" v-model="lastName"></b-form-input>
                 <span
                   v-if="$v.registerGroup.$dirty && $v.lastName.$invalid"
                   class="alert alert-danger">{{ lastNameErrorMessage }}</span>

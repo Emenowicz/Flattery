@@ -1,5 +1,5 @@
 <template>
-  <b-container class="mx-auto w-75 main-container">
+  <b-container class="mx-auto w-75 main-container" v-if="redirectIfNotAuth">
     <h1 class="display-3">Edytuj swoje dane</h1>
     <div class="profile-container clearfix p-4">
       <b-form class="form-container">
@@ -101,6 +101,15 @@
       }
       ,
       userDataChange: ['username', 'userSurname', 'userPassword', 'userPasswordRepeat', 'userEmailAddress'],
+    },
+    computed: {
+      redirectIfNotAuth: function() {
+        if(this.user === null){
+          this.$router.replace("/");
+          return false;
+        }
+        return true;
+      }
     }
   }
 
@@ -110,7 +119,7 @@
 <style>
 
   .profile-container {
-    background-color: rgba(230, 247, 255, 0.97);
+    background-color: rgba(230, 247, 255, .7);
     border-radius: 10px;
     margin-top: 16px;
   }

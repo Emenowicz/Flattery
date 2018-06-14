@@ -98,6 +98,7 @@
         let filterMenu = document.getElementById("filter-menu");
         if (filterMenu.classList.contains('hide')) {
           filterMenu.classList.remove('hide');
+          document.getElementById("filter-button").textContent = "Zamknij Filtry";
         } else {
           filterMenu.classList.add('hide');
           document.getElementById("filter-button").textContent = "Pokaż Filtry";

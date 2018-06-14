@@ -126,7 +126,9 @@
           document.getElementById("errorParagraph").hidden = false;
         } else {
           this.searchOffers();
+          this.isLoaded = false;
           document.getElementById("errorParagraph").hidden = true;
+          document.getElementById("filter-container").hidden = true;
         }
       },
       setRadiusType(arg) {

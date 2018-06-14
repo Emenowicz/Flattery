@@ -17,7 +17,7 @@
         maxPrice: '',
         daysSinceToday: '',
         chosenDate: '',
-        radiusFromLocation: '',
+        radiusFromLocation: '5',
         houseTypeDropdownSelection: 'Flat',
         roomTypeDropdownSelection: 'SinglePerson',
         roomDropdownDisable: true,
@@ -46,7 +46,10 @@
           }, {
             value: "House",
             text: "Dom"
-          }]
+          }],
+        radiusTypes: [
+          '0','2','5','10','15','30','50','75','100'
+        ]
       }
     },
     props: {
@@ -104,7 +107,7 @@
         this.houseTypeDropdownSelection = arg;
         this.roomDropdownDisable = arg !== 'Room';
         if (this.roomDropdownDisable === true) {
-          this.roomTypeDropdownSelection = '';
+          this.roomTypeDropdownSelection = 'SinglePerson';
         }
       },
       setOfferDaysOld() {
@@ -115,6 +118,7 @@
       },
       setRoomType(arg) {
         this.roomTypeDropdownSelection = arg;
+        document.getElementById("room-type").text(arg);
       },
       checkFiltersAndSubmit() {
         this.searchInput = this.search;
@@ -124,6 +128,9 @@
           this.searchOffers();
           document.getElementById("errorParagraph").hidden = true;
         }
+      },
+      setRadiusType(arg) {
+        this.radiusFromLocation = arg;
       }
     },
     components: {
@@ -141,7 +148,7 @@
       <div id="filter-menu" class="filter-menu hide">
         <b-row class="justify-content-md-center">
           <b-col col lg="2">
-            <b-dropdown id="home-type" class="mx-1 type" right text="Czego szukasz?" v-b-tooltip.hover
+            <b-dropdown id="home-type" class="mx-1" right text="Czego szukasz?" v-b-tooltip.hover
                         title="Domyślnie: Mieszkanie">
               <b-dropdown-item disabled value="0">Czego szukasz?</b-dropdown-item>
               <b-dropdown-item v-for="houseType in houseTypes" :value="houseType.text"
@@ -151,7 +158,7 @@
             </b-dropdown>
           </b-col>
           <b-col col lg="3">
-            <b-dropdown id="room-type" class="mx-1 number-people" right text="Liczba osób"
+            <b-dropdown id="room-type" class="mx-1" right text="Liczba osób"
                         v-bind:disabled="roomDropdownDisable" v-b-tooltip.hover title="Domyślnie: Jednoosobowe">
               <b-dropdown-item disabled value="0">Ile osób?</b-dropdown-item>
               <b-dropdown-item v-for="roomType in roomTypes" v-model="roomTypeDropdownSelection"
@@ -179,10 +186,12 @@
               </b-form-input>
             </b-form-group>
             <b-col col sm="1">
-              <b-form-group class="distance">
-                <b-input v-model="radiusFromLocation" id="distance" size="lg" placeholder="1 km"
-                         v-on:click="alert(radiusFromLocation)"></b-input>
-              </b-form-group>
+              <b-dropdown id="radius-type" class="mx-1" right text="Odległość"
+                         v-b-tooltip.hover title="Domyślnie: 5 km">
+                <b-dropdown-item disabled value="0">Wybierz promień?</b-dropdown-item>
+                <b-dropdown-item v-for="radiusType in radiusTypes" v-on:click="setRadiusType(radiusType)">{{ radiusType }} km
+                </b-dropdown-item>
+              </b-dropdown>
             </b-col>
           </b-form>
           <b-form-group class="date" label="Od" label-size="lg" horizontal>

@@ -21,6 +21,11 @@ public class LoginController {
     @Autowired
     LoginAuthenticationProvider authenticationProvider;
 
+    @RequestMapping(method = RequestMethod.GET, value = "/out")
+    public void logoutUser() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/login")
     public ResponseEntity loginUser(@RequestBody @Valid LoginForm loginForm, HttpServletRequest request) {
         try {
@@ -33,5 +38,7 @@ public class LoginController {
         }
         return new ResponseEntity("User " + loginForm.getUserName() + "  has logged in", HttpStatus.OK);
     }
+
+
 
 }

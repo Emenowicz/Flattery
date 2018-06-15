@@ -4,8 +4,6 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import zpi.flattery.dto.RegistrationForm;
-import zpi.flattery.models.User;
-import zpi.flattery.repository.UserDao;
 import zpi.flattery.service.RegistrationService;
 
 import javax.annotation.Resource;

@@ -1,39 +1,29 @@
 package zpi.flattery.webscrapper.strategy;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.HttpUrl;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import zpi.flattery.models.Offer;
 import zpi.flattery.models.enums.OfferType;
 import zpi.flattery.models.enums.RoomType;
-import zpi.flattery.webscrapper.googleapi.GeocodeResponse;
-import zpi.flattery.webscrapper.googleapi.GoogleGeocodeApi;
 import zpi.flattery.webscrapper.util.OlxConstants;
 import zpi.flattery.webscrapper.util.OlxUtil;
 
 import java.io.IOException;
-import java.text.Normalizer;
-import java.time.Duration;
-import java.time.Instant;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
 
-public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
+public class OlxStrategy extends ScrapStrategy {
 
     private static final Logger LOGGER = Logger.getLogger(OlxStrategy.class.getName());
     private static final String BASE_URL = "www.olx.pl";
@@ -76,17 +66,13 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
             }
         }
         if (location != null) {
-            location = Normalizer.normalize(location, Normalizer.Form.NFD);
-            location = location.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
-            //'ł' is still not transformed to 'l'
-            location = location.replaceAll("ł", "l");
-            location = location.replaceAll("Ł", "L");
-            httpUrl.addEncodedPathSegment(location);
+            httpUrl.addEncodedPathSegment(getNormalizedString(location));
         }
         if (query != null) {
             httpUrl.addEncodedPathSegment("q-" + query.replaceAll("\\s+", "-"));
         }
         urlToScrap = httpUrl.build().toString() + "/";
+
 
         if (minPrice != 0 || maxPrice != 0 || radius != null || roomType != null) {
             boolean isAnyParamAdded = false;
@@ -138,12 +124,12 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
         //Scrapping offers
         try {
             Connection.Response response = Jsoup.connect(urlToScrap).followRedirects(false).execute();
-            while (response.statusCode() == 200) {
+            while (response.statusCode() == 200 && currentPage < 5) {
                 Document doc = Jsoup.connect(urlToScrap).get();
                 Elements offers = doc.select(".offer");
                 offers.forEach(element -> {
                     Offer offerToAdd = getOfferFromElement(element);
-                    if (offerToAdd != null && isOfferBeforeSearchingDate(offerToAdd)) {
+                    if (offerToAdd != null && isOfferFreshEnough(offerToAdd, daysOld)) {
                         if (!scrappedOffers.contains(offerToAdd))
                             scrappedOffers.add(offerToAdd);
                     }
@@ -165,14 +151,6 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
         return addLatLang(scrappedOffers);
     }
 
-    private boolean isOfferBeforeSearchingDate(Offer offer) {
-        if (daysOld == 0)
-            return true;
-
-        LocalDateTime currentDate = LocalDateTime.now();
-        long daysBetween = Duration.between(Instant.parse(offer.getPublishingDate()), currentDate).toDays();
-        return daysBetween <= daysOld;
-    }
 
     private Offer getOfferFromElement(Element offerElement) {
         String title;
@@ -238,35 +216,5 @@ public class OlxStrategy extends java.util.Observable implements ScrapStrategy {
             default:
                 return false;
         }
-    }
-
-    private Single<List<Offer>> addLatLang(ArrayList<Offer> scrappedOffers) {
-        //Creating Retrofit instance
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(GoogleGeocodeApi.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
-        GoogleGeocodeApi service = retrofit.create(GoogleGeocodeApi.class);
-
-        //Creating Observable objects from offers and addidng them to list
-        List<Observable<Offer>> observableList = new LinkedList<>();
-        for (Offer offer : scrappedOffers) {
-            observableList.add(service.getGeocode(offer.getCity(), GoogleGeocodeApi.API_KEY)
-                    .map(response -> combineResponseWithOffer(offer, response)));
-        }
-        //Observables from list are observed on the same thread so the whole process will wait for all of them to being processed, before completion
-        return Observable.fromIterable(observableList)
-                .flatMap(task -> {
-                    task.observeOn(Schedulers.computation());
-                    return task;
-                }).toList();
-    }
-
-    private Offer combineResponseWithOffer(Offer offer, GeocodeResponse geocodeResponse) {
-        if (!geocodeResponse.status.equals("OVER_QUERY_LIMIT")) {
-            offer.setCoordinates("lat=" + geocodeResponse.results[0].geometry.location.lat + ", lng=" + geocodeResponse.results[0].geometry.location.lng);
-        }
-        return offer;
     }
 }

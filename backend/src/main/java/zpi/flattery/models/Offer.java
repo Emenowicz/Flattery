@@ -7,13 +7,15 @@ import zpi.flattery.models.enums.RoomType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table(name = "Offers")
-public class Offer {
+public class Offer implements Comparable<Offer> {
 
     @Id
     @GeneratedValue
@@ -383,5 +385,19 @@ public class Offer {
     @Override
     public int hashCode() {
         return Objects.hash(urlToOffer);
+    }
+
+    @Override
+    public int compareTo(Offer o) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime parsedDate = LocalDateTime.parse(publishingDate, formatter);
+        LocalDateTime parsedDate2 = LocalDateTime.parse(o.getPublishingDate(), formatter);
+        if (parsedDate.isBefore(parsedDate2)) {
+            return 1;
+        } else if (parsedDate.isEqual(parsedDate2)) {
+            return 0;
+        } else {
+            return -1;
+        }
     }
 }

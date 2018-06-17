@@ -65,7 +65,7 @@
             roomType: this.roomTypeDropdownSelection,
             minPrice: this.minPrice,
             maxPrice: this.maxPrice,
-            offerDaysOld: this.offerDaysOld,
+            offerDaysOld: this.daysSinceToday,
             radiusFromLocation: this.radiusFromLocation
           }).then(result => {
             console.log(result.data);

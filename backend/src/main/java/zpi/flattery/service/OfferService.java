@@ -85,6 +85,8 @@ public class OfferService {
             offer = offerFromDb.get();
             if (favouriteDao.existsById(new Favourite.FavouriteId(user.getId(), offer.getId())))
                 throw new IllegalArgumentException("Offer is already added as favourite");
+            else
+                favouriteDao.save(new Favourite(user, offer));
         } else {
             offer = offerDao.save(offer);
             favouriteDao.save(new Favourite(user, offer));

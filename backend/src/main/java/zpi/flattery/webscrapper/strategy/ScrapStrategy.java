@@ -24,9 +24,10 @@ import java.util.List;
 public abstract class ScrapStrategy {
 
     abstract public Single<List<Offer>> scrap();
+
     abstract public void setScrapParameters(RoomType roomType, OfferType offerType, String query, double minPrice, double maxPrice, String place, Integer radius, Integer daysOld);
 
-    protected String getNormalizedString(String location){
+    protected String getNormalizedString(String location) {
         location = Normalizer.normalize(location, Normalizer.Form.NFD);
         location = location.replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
         //'ł' is still not transformed to 'l'

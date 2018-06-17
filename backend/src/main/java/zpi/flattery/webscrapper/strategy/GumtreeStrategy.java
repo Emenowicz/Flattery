@@ -7,14 +7,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import zpi.flattery.models.Offer;
 import zpi.flattery.models.enums.OfferType;
 import zpi.flattery.models.enums.RoomType;
@@ -25,12 +17,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.time.format.DateTimeFormatter.ofPattern;
-import static org.openqa.selenium.support.ui.ExpectedConditions.attributeToBe;
 
 public class GumtreeStrategy extends ScrapStrategy {
 
@@ -91,7 +81,7 @@ public class GumtreeStrategy extends ScrapStrategy {
 
         Elements imgElement = offerElement.select("img");
         photoUrl = imgElement.attr("src");
-        if(photoUrl.equals("https://securet9.classistatic.com/1.1.736/images//loading.gif")){
+        if (photoUrl.equals("https://securet9.classistatic.com/1.1.736/images//loading.gif")) {
             photoUrl = "http://wpolskejedziemy.pl/web/uploaded_images/gallery/300x300/121366632662.png";
         }
 
@@ -102,12 +92,12 @@ public class GumtreeStrategy extends ScrapStrategy {
 
         Elements priceElement = offerElement.select("span.amount");
         String priceString = priceElement.text();
-        if(!priceString.equals("")){
+        if (!priceString.equals("")) {
             priceString = priceString.substring(0, priceString.length() - 2);
             priceString = priceString.replaceAll("\\s+", "");
             priceString = priceString.replaceAll(",", ".");
             price = Double.parseDouble(priceString);
-        }else{
+        } else {
             price = 0.0;
         }
         Elements dateElement = offerElement.select("div.creation-date");
@@ -125,11 +115,11 @@ public class GumtreeStrategy extends ScrapStrategy {
             String[] dateElements = dateString.split("\\s");
             currentDate = currentDate.minusHours(Integer.parseInt(dateElements[0]));
             return currentDate.format(ofPattern("yyyy-MM-dd hh:mm"));
-        } else if(dateString.contains("min")) {
+        } else if (dateString.contains("min")) {
             String[] dateElements = dateString.split("\\s");
             currentDate = currentDate.minusMinutes(Integer.parseInt(dateElements[0]));
             return currentDate.format(ofPattern("yyyy-MM-dd hh:mm"));
-        }else {
+        } else {
             String[] dayAndMonth = dateString.split("-");
             LocalDate dateWithoutYearCheck = LocalDate.of(currentDate.getYear(), Integer.parseInt(dayAndMonth[1]), Integer.parseInt(dayAndMonth[0]));
             if (dateWithoutYearCheck.isAfter(LocalDate.now())) {

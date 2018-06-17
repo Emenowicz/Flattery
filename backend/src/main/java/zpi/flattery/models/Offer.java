@@ -392,11 +392,11 @@ public class Offer implements Comparable<Offer> {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime parsedDate = LocalDateTime.parse(publishingDate, formatter);
         LocalDateTime parsedDate2 = LocalDateTime.parse(o.getPublishingDate(), formatter);
-        if(parsedDate.isBefore(parsedDate2)){
+        if (parsedDate.isBefore(parsedDate2)) {
             return 1;
-        }else if(parsedDate.isEqual(parsedDate2)){
+        } else if (parsedDate.isEqual(parsedDate2)) {
             return 0;
-        }else {
+        } else {
             return -1;
         }
     }

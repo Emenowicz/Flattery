@@ -7,7 +7,7 @@ import io.reactivex.Observable;
 
 public interface GoogleGeocodeApi {
     String BASE_URL = "https://maps.googleapis.com";
-    String API_KEY = "AIzaSyAJ4sJz028nuy-yw7KL1kr6Ay7VYIX86J0";
+    String API_KEY = "AIzaSyA8SItRXDVTPIST00vdPqCUTLO6kmdgMdI";
 
     @GET("/maps/api/geocode/json")
     Observable<GeocodeResponse> getGeocode(@Query("address") String address, @Query("key") String key);

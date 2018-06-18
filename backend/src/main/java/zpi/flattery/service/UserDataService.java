@@ -60,7 +60,8 @@ public class UserDataService {
 
             service.getCity(latitude + "," + longitude, GoogleGeocodeApi.API_KEY)
                     .subscribeOn(Schedulers.io())
-                    .subscribe(response -> handleLocationRespond(response, principal, result));
+                    .subscribe(response -> handleLocationRespond(response, principal, result),
+                            error -> handleError(error, result));
 
             user.get().setLongitude(longitude);
             user.get().setLatitude(latitude);
@@ -71,7 +72,7 @@ public class UserDataService {
     }
 
     private void handleLocationRespond(GeocodeResponse geocodeResponse, Principal principal, DeferredResult<String> result) {
-        if (geocodeResponse.status.equals("OVER_QUERY_LIMIT")) {
+        if (!geocodeResponse.status.equals("OVER_QUERY_LIMIT")) {
             Optional<User> user = userDao.findByUserName(principal.getName());
             //formatted_address looks like this "Oławska 4a, 50-123 Wrocław, Poland"
             //there are two possible scenarios for city name: with zipcode or without it
@@ -92,5 +93,8 @@ public class UserDataService {
         } else {
             result.setErrorResult(new Exception("GoogleApi: OVER_QUERY_LIMIT"));
         }
+    }
+    private void handleError(Throwable e, DeferredResult r){
+        System.out.println(e.getMessage());
     }
 }

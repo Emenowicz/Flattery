@@ -86,7 +86,7 @@
                 <v-flex xs1></v-flex>
                 <v-flex xs2>
                   <span class="body filter-title">Rodzaj:</span>
-                  <v-radio-group v-model="houseTypeValue" :mandatory="false" :color="green">
+                  <v-radio-group v-model="houseTypeValue" :mandatory="false">
                     <v-radio v-for="type in houseTypes"
                              v-bind:label="type.text"
                              v-bind:value="type.value"
@@ -177,7 +177,8 @@
       onLocationClick() {
         if (!this.isLocationOn) {
           if (this.location !== '') {
-            this.searchValue = this.location;
+            this.cityValue = this.location;
+            this.$emit("showSnackbar", 'Lokalizacja uaktualniona!')
           }
           this.$emit('setLocation');
         }
@@ -187,11 +188,11 @@
     watch: {
       location: function (newVal, oldVal) {
         if (this.isLocationOn) {
-          this.searchInput = newVal
+          this.cityValue = newVal
         }
       }
-    },created: function(){
-        this.backButton = false;
+    }, created: function () {
+      this.backButton = false;
     },
     props: {
       location: ''

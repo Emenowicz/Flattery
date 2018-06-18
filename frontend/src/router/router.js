@@ -18,7 +18,9 @@ const routes = [
       radius: route.query.radiusValue,
       daysOld: route.query.daysOld,
       offerType: route.query.offerType,
-      roomType: route.query.roomType,}) },
+      roomType: route.query.roomType,
+    })
+  },
   { path: '/account', component: UserAccount},
   { path: '/favourites', component: FavOffers}
 ];

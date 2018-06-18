@@ -71,6 +71,24 @@ public class UserDataController {
         return new ResponseEntity(HttpStatus.CONFLICT);
     }
 
+    @RequestMapping(value = "/addFavourite", produces = "application/json", method = RequestMethod.PUT)
+    public ResponseEntity<String> addFavouriteOffer(@RequestBody FavouriteRequest favouriteRequest, Principal principal) {
+        try {
+            offerService.addFavouriteOfferToUser(favouriteRequest.getOffer(), userDataService.getDataForLoggedUser(principal));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity
+                    .status(HttpStatus.NOT_ACCEPTABLE)
+                    .body(e.getMessage());
+        }
+
+        List<Favourite> list = offerService.findAllFavourites();
+        for (Favourite fav : list) {
+            System.out.println(fav);
+        }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Offer successfully added as favourite.");
+    }
+
     @RequestMapping(value = "/getUsersFavourites", method = RequestMethod.GET)
     public List<Favourite> getUsersFavouriteOffers(Principal principal) {
         try {
@@ -88,7 +106,7 @@ public class UserDataController {
         try {
             User user = userDataService.getDataForLoggedUser(principal);
             Offer offer = offerService.findByUrToOffer(favouriteRequest.getOffer().getUrlToOffer()).get();
-            offerService.removeByOfferAndUser(offer,user);
+            offerService.removeByOfferAndUser(offer, user);
             return ResponseEntity.status(HttpStatus.OK).body("Offer has been removed from favourites");
         } catch (NotFoundException e) {
             e.printStackTrace();

@@ -1,7 +1,7 @@
 <template>
-  <b-container class="margin-fix" v-if="redirectIfNotAuth" >
+  <b-container class="margin-fix" v-if="redirectIfNotAuth">
     <ul id="listview" v-if="emptyList">
-      <li class="card" v-for="offer in favOffers" >
+      <li class="card" v-for="offer in favOffers">
         <v-flex xs12>
           <v-card
             color="white"
@@ -62,10 +62,10 @@
     </ul>
     <div v-else>
       <v-card
-        class="container-radius"
+        class="container-error container-radius"
         raised
         light>
-        <h3 class="loading-title display-1 redtext">Nie posiadasz ulubionych ofert!</h3>
+        <h3 class="loading-title display-1">Nie posiadasz ulubionych ofert :(</h3>
       </v-card>
     </div>
 
@@ -81,9 +81,13 @@
 
   export default {
     name: "FavOffers",
+    data() {
+      return {
+        favOffers: []
+      }
+    },
     props: {
       user: null,
-      favOffers: []
     },
     components: {
       ShareIcon, HeartOutlineIcon, HeartIcon
@@ -93,16 +97,23 @@
         axios.post('http://127.0.0.1:8088/removeFavouriteOffer', {
             offer: currentOffer.offer
           }
-        ).then(e => this.updateFavouriteList());
+        ).then(result => {
+          this.updateFavouriteList();
+          this.$emit('showSnackbar', 'Oferta pomyślnie usunięta.');
+        }).catch(e => {
+          this.$emit('showSnackbar', 'Błąd: Oferta nie została usunięta.');
+        });
       },
-      updateFavouriteList(){
+      updateFavouriteList() {
         axios.get('http://127.0.0.1:8088/getUsersFavourites').then(result => {
-          this.favOffers = result.data;
+            this.favOffers = result.data;
           }
         );
       }
     },
-
+    created() {
+      this.updateFavouriteList();
+    },
     computed: {
       redirectIfNotAuth: function () {
         if (this.user === null) {
@@ -156,5 +167,8 @@
     border-color: black;
   }
 
+  .container-error {
+    margin-top: 50px;
+  }
 
 </style>

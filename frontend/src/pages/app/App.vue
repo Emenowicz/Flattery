@@ -2,10 +2,10 @@
   <div id="app">
     <v-app id="inspire">
       <v-snackbar
-        :timeout="timeout"
+        :timeout="4000"
         :top="true"
-        :multi-line="mode === 'multi-line'"
-        :vertical="mode === 'vertical'"
+        :multi-line="false"
+        :vertical="false"
         v-model="snackbar">
         {{ snackbarText }}
         <v-btn flat color="pink" @click.native="snackbar = false">Zamknij</v-btn>
@@ -50,9 +50,8 @@
           :auth="isAuthenticated"
           :location="location"
           :user="user"
-          :searchInput="search"
-          :favOffers="favouriteOffers"
-          v-on:setLocation="setGeoLocation"></router-view>
+          v-on:setLocation="setGeoLocation"
+          v-on:showSnackbar="showSnackbar"></router-view>
       </div>
       <div class="footer fixed-bottom">
         <!-- As a heading -->
@@ -263,7 +262,6 @@
       return {
         appName: 'Flattery',
         active: null,
-        status: 'not_accepted',
         user: null,
         isAuthenticated: false,
         registrationCompleted: false,
@@ -284,9 +282,7 @@
         hasLoginError: false,
         //snackbar
         snackbarText: '',
-        snackbar: false,
-        favouriteOffers: [],
-        backButton: false
+        snackbar: false
       }
     },
     methods: {
@@ -320,7 +316,6 @@
       async checkIfAuthenticated() {
         try {
           await axios.get('http://127.0.0.1:8088/loggedUserData', {}).then(result => {
-            console.log(result.data);
             this.user = result.data;
             this.location = this.user.location;
             this.isAuthenticated = true;
@@ -365,7 +360,6 @@
               emailAddress: this.emailAddress
             }).then(result => {
               this.registrationCompleted = true;
-              console.log(result.status)
             })
           } catch (e) {
             console.log(e.message)
@@ -388,7 +382,7 @@
             this.positionLong = position.coords.longitude;
             if (this.isAuthenticated)
               this.updateUserLocation();
-            else{
+            else {
               this.snackbarText = 'By zapisać lokalizacje, musisz się zalogować.';
               this.snackbar = true;
             }
@@ -398,14 +392,14 @@
       async updateUserLocation() {
         let longDiff = Math.abs(this.user.latitude - this.positionLat);
         let latDiff = Math.abs(this.user.longitude - this.positionLong);
-        if (longDiff > 0.1 || latDiff > 0.1) {
+        if (longDiff > 0.1 || latDiff > 0.1 || this.user.location == null) {
           try {
             await axios.put(`http://127.0.0.1:8088/saveUserLocation`, {
               longitude: this.positionLong,
               latitude: this.positionLat
             }).then(result => {
-              if(result.data)
-              this.location = this.user.location = result.data;
+              if (result.data)
+                this.location = this.user.location = result.data;
               this.user.longitude = this.positionLong;
               this.user.latitude = this.positionLat;
               this.snackbarText = 'Lokalizacja pomyślnie zaktualizowana';
@@ -416,7 +410,7 @@
             this.snackbarText = 'Błąd: Lokalizacja nie została zaktualizowana';
             this.snackbar = true;
           }
-        }else if(this.user.location !== ''){
+        } else if (this.user.location !== '') {
           this.location = this.user.location
         }
       },
@@ -424,7 +418,6 @@
         this.$router.replace({path: '/account'});
       },
       async showFavOffers() {
-        axios.get('http://127.0.0.1:8088/getUsersFavourites').then(offers => this.favouriteOffers = offers.data);
         this.$router.replace({path: '/favourites'});
       },
       async logout() {
@@ -437,8 +430,8 @@
               if (this.currentPathMustBeAuthenticated()) {
                 this.$router.replace({path: '/'});
               }
-            this.snackbarText = 'Wylogowano!';
-            this.snackbar = true;
+              this.snackbarText = 'Wylogowano!';
+              this.snackbar = true;
             }
           ).catch(e => alert(e));
         } catch (e) {
@@ -453,6 +446,10 @@
       },
       backToMainPage() {
         this.$router.replace({path: '/'});
+      },
+      showSnackbar(text) {
+        this.snackbarText = text;
+        this.snackbar = true;
       }
     },
     // is called onPageLoad

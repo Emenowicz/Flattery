@@ -98,10 +98,10 @@
               urlToOffer: offer.urlToOffer
             }
           }).then(result => {
-            console.log(result.status)
+            this.$emit('showSnackbar', 'Ofert pomyślnie dodana do ulubionych');
           })
         } catch (e) {
-          console.log(e.message)
+          this.$emit('showSnackbar', 'Błąd: Oferta nie została dodana do ulubionych.');
         }
       },
       hideDiv: function () {
@@ -125,7 +125,7 @@
         let currentDate = new Date();
         let chosenDate = new Date(this.chosenDate);
         let timeDifference = Math.abs(currentDate.getTime() - chosenDate.getTime());
-        this.daysSinceToday = Math.ceil(timeDifference / (1000 * 3600 * 24));
+        this.daysSinceToday = Math.ceil(timeDifference / (1000 * 3600 * 24)) - 1;
       },
       setRoomType(arg) {
         this.roomTypeDropdownSelection = arg;
@@ -150,7 +150,7 @@
       ShareIcon, HeartOutlineIcon, HeartIcon
     },
     computed: {
-      isListViewEmpty: function() {
+      isListViewEmpty: function () {
         return this.fetchedOffers.length === 0;
       }
     },
@@ -290,7 +290,8 @@
           class="container-radius"
           raised
           light>
-          <h3 class="loading-title display-1 redtext">Niestety nie znaleźliśmy ofert spełniających warunki filtrów szukających. Proszę spróbuj ponownie!</h3>
+          <h3 class="loading-title display-1 redtext">Niestety nie znaleźliśmy ofert spełniających warunki filtrów
+            szukających. Proszę spróbuj ponownie!</h3>
         </v-card>
       </div>
     </ul>
@@ -364,6 +365,7 @@
 
   .container-radius {
     border-radius: 10px;
+    padding: 30px 30px 30px 30px;
   }
 
   .price {

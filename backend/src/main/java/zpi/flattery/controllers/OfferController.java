@@ -22,9 +22,6 @@ import java.util.List;
 public class OfferController {
 
     @Resource
-    UserDataService userDataService;
-
-    @Resource
     OfferService offerService;
 
     @RequestMapping(value = "/offers", produces = "application/json", method = RequestMethod.POST)
@@ -32,23 +29,5 @@ public class OfferController {
         DeferredResult<List<Offer>> result = new DeferredResult<>();
         offerService.scrapOffers(searchRequest, result);
         return result;
-    }
-
-    @RequestMapping(value = "/addFavourite", produces = "application/json", method = RequestMethod.PUT)
-    public ResponseEntity<String> addFavouriteOffer(@RequestBody FavouriteRequest favouriteRequest, Principal principal) {
-        try {
-            offerService.addFavouriteOfferToUser(favouriteRequest.getOffer(), userDataService.getDataForLoggedUser(principal));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity
-                    .status(HttpStatus.NOT_ACCEPTABLE)
-                    .body(e.getMessage());
-        }
-
-        List<Favourite> list = offerService.findAllFavourites();
-        for (Favourite fav : list) {
-            System.out.println(fav);
-        }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Offer successfully added as favourite.");
     }
 }

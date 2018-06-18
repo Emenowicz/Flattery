@@ -13,8 +13,8 @@
         isLoaded: false,
         searchInput: '',
         fetchedOffers: [],
-        minPrice: '',
-        maxPrice: '',
+        minPriceValue: '',
+        maxPriceValue: '',
         daysSinceToday: '',
         chosenDate: '',
         radiusFromLocation: '5',
@@ -53,20 +53,28 @@
       }
     },
     props: {
+      auth: null,
       search: null,
-      auth: null
+      city: null,
+      minPrice: null,
+      maxPrice: null,
+      radius: null,
+      daysOld: null,
+      offerType: null,
+      roomType: null,
     },
     methods: {
-      async searchOffers() {
+      async searchOffers(search, city, minPrice, maxPrice, offerType, roomType, radius, daysOld,) {
         try {
           await axios.post(`http://127.0.0.1:8088/offers`, {
-            query: this.search,
-            offerType: this.houseTypeDropdownSelection,
-            roomType: this.roomTypeDropdownSelection,
-            minPrice: this.minPrice,
-            maxPrice: this.maxPrice,
-            offerDaysOld: this.daysSinceToday,
-            radiusFromLocation: this.radiusFromLocation
+            query: search,
+            city: city,
+            offerType: offerType,
+            roomType: roomType,
+            minPrice: minPrice,
+            maxPrice: maxPrice,
+            offerDaysOld: daysOld,
+            radiusFromLocation: radius
           }).then(result => {
             console.log(result.data);
             this.fetchedOffers = result.data;
@@ -128,7 +136,7 @@
         if (this.searchInput === '') {
           document.getElementById("errorParagraph").hidden = false;
         } else {
-          this.searchOffers();
+          this.searchOffers(this.searchInput, null, this.minPriceValue, this.maxPriceValue, this.houseTypeDropdownSelection, this.roomTypeDropdownSelection, this.radiusFromLocation, this.daysSinceToday);
           this.isLoaded = false;
           document.getElementById("errorParagraph").hidden = true;
           document.getElementById("filter-container").hidden = true;
@@ -147,7 +155,7 @@
       }
     },
     created: function () {
-      this.searchOffers()
+      this.searchOffers(this.search, this.city, this.minPrice, this.maxPrice, this.offerType, this.roomType, this.radius, this.daysOld)
     }
   }
 </script>

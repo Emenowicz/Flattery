@@ -90,7 +90,7 @@ public class UserDataService {
             userDao.save(user.get());
             result.setResult(cityName);
         } else {
-            System.out.println("GoogleApi: OVER_QUERY_LIMIT");
+            result.setErrorResult(new Exception("GoogleApi: OVER_QUERY_LIMIT"));
         }
     }
 }

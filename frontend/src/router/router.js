@@ -10,7 +10,15 @@ Vue.use(Router);
 
 const routes = [
   { path: '/', component: Search },
-  { path: '/offers', component: ListView, props: (route) => ({ search: route.query.search }) },
+  { path: '/offers', component: ListView, props: (route) => ({
+      search: route.query.search,
+      city: route.query.city,
+      minPrice: route.query.minPrice,
+      maxPrice: route.query.maxPrice,
+      radius: route.query.radiusValue,
+      daysOld: route.query.daysOld,
+      offerType: route.query.offerType,
+      roomType: route.query.roomType,}) },
   { path: '/account', component: UserAccount},
   { path: '/favourites', component: FavOffers}
 ];

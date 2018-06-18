@@ -1,6 +1,15 @@
 <template>
   <div id="app">
     <v-app id="inspire">
+      <v-snackbar
+        :timeout="timeout"
+        :top="true"
+        :multi-line="mode === 'multi-line'"
+        :vertical="mode === 'vertical'"
+        v-model="snackbar">
+        {{ snackbarText }}
+        <v-btn flat color="pink" @click.native="snackbar = false">Zamknij</v-btn>
+      </v-snackbar>
       <div class="header fixed-top">
         <b-navbar toggleable="md" type="light" variant="light">
           <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
@@ -25,6 +34,8 @@
                                  extra-toggle-classes="nav-link-custom" right>Edytuj profil
                 </b-dropdown-item>
                 <b-dropdown-item v-on:click="showFavOffers()" class="dropdown-item-padding">Ulubione oferty
+                </b-dropdown-item>
+                <b-dropdown-item v-on:click="setGeoLocation()" class="dropdown-item-padding">Zaktualizuj lokalizacje
                 </b-dropdown-item>
               </b-nav-item-dropdown>
               <b-nav-item href="#" class="mr-4" v-on:click="logout">
@@ -271,6 +282,9 @@
         loginUserName: '',
         loginPassword: '',
         hasLoginError: false,
+        //snackbar
+        snackbarText: '',
+        snackbar: false,
         favouriteOffers: [],
         backButton: false
       }
@@ -327,7 +341,8 @@
             }).then(result => {
               this.checkIfAuthenticated();
               this.closeLoginRegisterPopup();
-              console.log(result);
+              this.snackbarText = 'Zalogowano!';
+              this.snackbar = true;
             });
           } catch (e) {
             console.log(e.message + '\nStatus: ' + e.status)
@@ -373,6 +388,10 @@
             this.positionLong = position.coords.longitude;
             if (this.isAuthenticated)
               this.updateUserLocation();
+            else{
+              this.snackbarText = 'By zapisać lokalizacje, musisz się zalogować.';
+              this.snackbar = true;
+            }
           });
         }
       },
@@ -385,13 +404,20 @@
               longitude: this.positionLong,
               latitude: this.positionLat
             }).then(result => {
+              if(result.data)
               this.location = this.user.location = result.data;
               this.user.longitude = this.positionLong;
               this.user.latitude = this.positionLat;
+              this.snackbarText = 'Lokalizacja pomyślnie zaktualizowana';
+              this.snackbar = true;
             })
           } catch (e) {
             console.log(e.message);
+            this.snackbarText = 'Błąd: Lokalizacja nie została zaktualizowana';
+            this.snackbar = true;
           }
+        }else if(this.user.location !== ''){
+          this.location = this.user.location
         }
       },
       async showUserAccount() {
@@ -411,6 +437,8 @@
               if (this.currentPathMustBeAuthenticated()) {
                 this.$router.replace({path: '/'});
               }
+            this.snackbarText = 'Wylogowano!';
+            this.snackbar = true;
             }
           ).catch(e => alert(e));
         } catch (e) {

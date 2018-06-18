@@ -42,7 +42,7 @@ public class UserDataService {
     }
 
     public void saveOrUpdateUser(User user, String password) {
-        if(password != null){
+        if(password != null && !password.equals("")){
             user.setPassword(passwordEncoder.encode(password));
         }
         userDao.save(user);

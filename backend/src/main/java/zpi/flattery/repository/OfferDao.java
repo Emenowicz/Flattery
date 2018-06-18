@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface OfferDao extends JpaRepository<Offer, Integer> {
 
     Optional<Offer> findByTitleAndCityAndPublishingDate(String title, String city, String publishingDate);
+
+    Optional<Offer> findByUrlToOffer(String urlToOffer);
 }

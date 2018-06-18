@@ -4,7 +4,9 @@ import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.async.DeferredResult;
+import zpi.flattery.controllers.model.FavouriteRequest;
 import zpi.flattery.controllers.model.SearchRequest;
 import zpi.flattery.models.Favourite;
 import zpi.flattery.models.Offer;
@@ -93,7 +95,20 @@ public class OfferService {
         }
     }
 
+    @Transactional
+    public void removeByOfferAndUser(Offer offer, User user) {
+        favouriteDao.removeByOfferAndUser(offer, user);
+    }
+
+    public Optional<Offer> findByUrToOffer(String urlToOffer) {
+        return offerDao.findByUrlToOffer(urlToOffer);
+    }
+
     public List<Favourite> findAllFavourites() {
         return favouriteDao.findAll();
+    }
+
+    public List<Favourite> getUsersFavouriteOffers(User user){
+        return favouriteDao.getAllByUser(user);
     }
 }

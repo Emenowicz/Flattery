@@ -85,7 +85,9 @@
               title: offer.title,
               price: offer.price,
               city: offer.city,
-              publishingDate: offer.publishingDate
+              publishingDate: offer.publishingDate,
+              photoUrl: offer.photoUrl,
+              urlToOffer: offer.urlToOffer
             }
           }).then(result => {
             console.log(result.status)

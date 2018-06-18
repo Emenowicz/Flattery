@@ -65,6 +65,8 @@
           this.searchInput = newVal
         }
       }
+    },created: function(){
+        this.backButton = false;
     },
     props: {
       location: ''

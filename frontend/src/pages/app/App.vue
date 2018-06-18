@@ -18,8 +18,11 @@
             </b-navbar-nav>
 
             <b-navbar-nav class="ml-auto" v-else>
+              <v-btn color="success" v-on:click="backToMainPage()" style="margin-right: 100px">
+                <p>Wróc na stronę główną</p></v-btn>
               <b-nav-item-dropdown class="mr4 navbar-font navbar-link" :text="user.userName">
-                <b-dropdown-item v-on:click="showUserAccount()" class="dropdown-item-padding" extra-toggle-classes="nav-link-custom" right>Edytuj profil
+                <b-dropdown-item v-on:click="showUserAccount()" class="dropdown-item-padding"
+                                 extra-toggle-classes="nav-link-custom" right>Edytuj profil
                 </b-dropdown-item>
                 <b-dropdown-item v-on:click="showFavOffers()" class="dropdown-item-padding">Ulubione oferty
                 </b-dropdown-item>
@@ -37,6 +40,7 @@
           :location="location"
           :user="user"
           :searchInput="search"
+          :favOffers="favouriteOffers"
           v-on:setLocation="setGeoLocation"></router-view>
       </div>
       <div class="footer fixed-bottom">
@@ -266,7 +270,9 @@
         //login fields
         loginUserName: '',
         loginPassword: '',
-        hasLoginError: false
+        hasLoginError: false,
+        favouriteOffers: [],
+        backButton: false
       }
     },
     methods: {
@@ -392,6 +398,7 @@
         this.$router.replace({path: '/account'});
       },
       async showFavOffers() {
+        axios.get('http://127.0.0.1:8088/getUsersFavourites').then(offers => this.favouriteOffers = offers.data);
         this.$router.replace({path: '/favourites'});
       },
       async logout() {
@@ -415,6 +422,9 @@
         let currentPath = this.$router.currentRoute.path;
         return currentPath === '/account' || currentPath === '/favourites';
 
+      },
+      backToMainPage() {
+        this.$router.replace({path: '/'});
       }
     },
     // is called onPageLoad
@@ -461,7 +471,7 @@
   @import '../../../static/css/website.css';
   @import '../../../static/css/header.css';
 
-  .dropdown-item-padding{
+  .dropdown-item-padding {
     padding: 5px;
   }
 </style>
